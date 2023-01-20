@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(207, 207, 207);
+  border-radius: 10px;
+}
+
+* {
+  font-family: "Kanit", sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  @apply m-0 flex flex-col h-screen;
+}
+
+.navbar-logo {
+  width: 55px;
+}
+
+.shadow-34 {
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+}
+.shadow-46 {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+}
+.shadow-66 {
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
+}
+
+.space-top {
+  @apply pt-36;
+}
+
+.carousel--image {
+  margin-top: -15px;
+  @apply w-full;
+}
+
+.carousel--image .img {
+  height: 629px;
+  @apply object-cover object-top;
+}
+
+.menu--bar {
+  @apply w-full fixed top-0 left-0 z-50 shadow-46 px-56 bg-white;
+}
+
+.menu--container {
+  @apply items-center justify-between py-8 flex md:px-10;
+}
+
+.menu--left {
+  @apply font-bold cursor-pointer flex items-center text-gray-800;
+}
+
+.menu--left .navbar-logo {
+  @apply w-20 px-4;
+}
+
+.menu--left .text {
+  @apply items-center text-3xl text-indigo-600;
+}
+
+.barsMenu {
+  @apply hidden float-right;
+}
+
+.ant-drawer-body {
+  @apply p-0;
+}
+.ant-drawer-body .ant-menu-horizontal > .ant-menu-item,
+.ant-drawer-body .ant-menu-horizontal > .ant-menu-submenu {
+  @apply w-full inline-block;
+}
+.ant-drawer-body .ant-menu-horizontal {
+  @apply border-none;
+}
+.ant-drawer-body .ant-menu-horizontal > .ant-menu-item:hover {
+  @apply border-transparent;
+}
+
+.navbar {
+  @apply flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white;
+}
+
+@media (max-width: 1539px) {
+  .menu--bar {
+    @apply px-2;
+  }
+}
+
+@media (max-width: 992px) {
+  .menu--bar {
+    @apply px-2;
+  }
+
+  .barsMenu {
+    @apply inline-flex;
+  }
+  .rightMenu {
+    @apply hidden;
+  }
+}
+
+@media (max-width: 767px) {
+  .menu--left .text {
+    @apply items-center text-2xl text-indigo-600;
+  }
+
+  .menu--container {
+    @apply py-4;
+  }
+
+  .carousel--image .img {
+    height: 100%;
+    @apply bg-top;
+  }
+
+  .space-top {
+    @apply pt-28;
+  }
+}
+
+img.ant-image-preview-img {
+  display: inline-block;
+}
+
+.form-photo {
+  @apply xl:py-12 xl:px-8 md:py-8 md:px-4 py-4 px-2;
+}
+
+/* secret layout */
+.appSecret {
+  @apply h-screen flex flex-col;
+}
