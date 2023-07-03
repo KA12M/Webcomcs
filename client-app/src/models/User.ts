@@ -1,3 +1,6 @@
+import { RcFile } from "antd/es/upload";
+import { JobHistory } from "./JobHistory";
+
 export interface User {
   token: string;
   username: string;
@@ -19,33 +22,46 @@ export interface registerDTO {
   role?: string | null;
 }
 
+export interface ChangePasswordDTO {
+  currentPassword: string;
+  newPasswords: string;
+}
+
 export class Profile {
   email: string = "";
   username: string = "";
   fullName: string = "";
   bio?: string = "";
-  image?: string | null;
+  image?: string | undefined;
   isRole: any;
 
-  student?: Student | null;
-  lecturer?: Lecturer | null;
-}  
+  isMe: boolean = false;
+  imagePreview?: string | undefined;
+
+  student?: Student | undefined = {};
+  lecturer?: Lecturer | undefined = {};
+  jobHistory?: JobHistory | null = null;
+}
 
 export interface Student {
+  yearEdu?: string;
   oldEdu?: string;
-  Address?: string;
+  address?: string;
 }
 
 export interface Lecturer {
-  Expert?: string;
-  LvEdu?: string;
-  Program?: string;
-  Position?: string;
-  Contact?: string;
+  expert?: string;
+  lvEdu?: string;
+  program?: string;
+  position?: string;
+  contact?: string;
 }
 
 export interface UpdateMe {
-  FullName: string;
-  Bio?: string;
-  Files?: File[];
+  fullName: string;
+  bio?: string;
+
+  student?: Student;
+  lecturer?: Lecturer;
+  fileImages?: RcFile | undefined;
 }

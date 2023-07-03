@@ -25,9 +25,7 @@ namespace Application.Projects
             {
                 RuleFor(x => x.Project.NameTH).NotEmpty();
                 RuleFor(x => x.Project.NameEN).NotEmpty();
-                RuleFor(x => x.Project.Description).NotEmpty();
-                RuleFor(x => x.Project.VideoUrl).NotEmpty();
-                RuleFor(x => x.Project.Consultants).Must(list => list.Count == 0).NotEmpty();
+                RuleFor(x => x.Project.Description).NotEmpty();  
             }
         }
 
@@ -37,13 +35,15 @@ namespace Application.Projects
             private readonly IUserAccessor userAccessor;
             private readonly IUploadFileAccessor uploadFileAccessor;
             private readonly IMapper mapper;
+            private readonly IGenerationAccessor generationAccessor;
 
-            public Handler(DataContext context, IUserAccessor userAccessor, IUploadFileAccessor uploadFileAccessor, IMapper mapper)
+            public Handler(DataContext context, IUserAccessor userAccessor, IUploadFileAccessor uploadFileAccessor, IMapper mapper, IGenerationAccessor generationAccessor)
             {
                 this.context = context;
                 this.userAccessor = userAccessor;
                 this.uploadFileAccessor = uploadFileAccessor;
                 this.mapper = mapper;
+                this.generationAccessor = generationAccessor;
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
@@ -54,12 +54,14 @@ namespace Application.Projects
 
                 var newProject = mapper.Map<Project>(request.Project);
 
-                (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOne(request.Project.FileImage);
+                (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOneAsync(request.Project.FileImage);
                 if (!string.IsNullOrEmpty(errorMessage)) return Result<Unit>.Failure(errorMessage);
                 if (!string.IsNullOrEmpty(imageName)) newProject.Image = imageName;
 
-                var fileUrl = await uploadFileAccessor.UpLoadFileOne(request.Project.FilePDF);
+                var fileUrl = await uploadFileAccessor.UpLoadFileOneAsync(request.Project.FilePDF);
                 if (!string.IsNullOrEmpty(fileUrl)) newProject.PDF = fileUrl; 
+
+                newProject.Id = generationAccessor.GenerateId("PROJ");
 
                 user.Projects.Add(newProject);
 

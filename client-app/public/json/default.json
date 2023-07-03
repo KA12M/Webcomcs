@@ -1,0 +1,58 @@
+{
+  "sign-in-photo": "image/photo-signin.jpg",
+  "lecturer-order-position": [
+    "KARM",
+    "Flutter master expert",
+    "ฝันร้ายของมวลมนุษย์",
+    "ราชาแห่งทาโลคาน"
+  ],
+  "card-menu": [
+    {
+      "title": "วิทย์คอม เราเรียนอะไร?",
+      "image": "image/comsci-study.png",
+      "url": "comsci-subjects"
+    },
+    {
+      "title": "หลักสูตรวิทยาการคอมพิวเตอร์",
+      "image": "image/324266943_1222157592040018_2369748989018405966_n.jpg",
+      "url": "syllabus"
+    },
+    {
+      "title": "โครงงานวิจัยนักศึกษา",
+      "image": "image/comsci.png",
+      "url": "projects"
+    },
+    {
+      "title": "อาจารย์ประจำสาขา",
+      "image": "image/bg-1.jpg",
+      "url": "lecturer"
+    },
+    {
+      "title": "การทำงานของศิษย์เก่า",
+      "image": "image/bg-5.jpg",
+      "url": "student-job-history"
+    },
+    {
+      "title": "นักศึกษา",
+      "image": "image/bg-2.jpg",
+      "url": "student"
+    }
+  ],
+  "youtube-guidelines": [
+    {
+      "title": "กดแชร์",
+      "description": "",
+      "pathImage": "image/youtube-step1.jpg"
+    },
+    {
+      "title": "คัดลอกลิ้ง ตัวอย่างดังภาพ",
+      "description": "",
+      "pathImage": "image/youtube-step2.png"
+    }
+  ],
+  "open-map-box": true,
+  "what-study": {
+    "title": "สาขาวิทยาการคอมพิวเตอร์ เราเรียนอะไร?",
+    "subTitle": "Computer Sciences (สาขาวิทยาศาสตร์คอมพิวเตอร์) คือ สาขาที่ผนวกเอาความรู้ด้านคณิตศาสตร์ การเขียนโปรแกรม หรือแม้ภาษาเข้าไว้ด้วยกันเพื่อใช้แก้ไขปัญหาต่างๆ อีกทั้งยังครอบคลุมไปถึงวิธีการออกแบบโปรแกรมเฉพาะด้าน วิธีการหาวิธีแก้ไขปัญหาที่เกิดขึ้นในระบบ"
+  }
+}

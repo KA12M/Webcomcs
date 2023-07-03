@@ -23,8 +23,9 @@ namespace Application.Courses
         {
             public CommandValidator()
             {
-                RuleFor(a => a.Id).NotEmpty(); 
-                RuleFor(a => a.Title).MaximumLength(90).NotEmpty(); 
+                RuleFor(a => a.Id).NotEmpty();
+                RuleFor(a => a.Title).MaximumLength(90).NotEmpty();
+                RuleFor(a => a.Photos).Must(a => a.Count() > 0).NotEmpty();
             }
         }
 
@@ -46,19 +47,20 @@ namespace Application.Courses
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var user = await context.Users
-                    .Include(a => a.Courses) 
+                    .Include(a => a.Courses)
+                        .ThenInclude(a => a.Photos)
                     .FirstOrDefaultAsync(a => a.UserName == userAccessor.GetUsername());
-                    
+
                 var course = user.Courses.FirstOrDefault(a => a.Id == request.Course.Id);
                 if (course == null) return null;
 
-                (string errorMessage, List<string> imgList) = await uploadFileAccessor.UpLoadImages(request.Course.FileImages);
-                if (!errorMessage.IsNullOrEmpty()) return Result<Unit>.Failure(errorMessage);
+                context.CoursePhoto.RemoveRange(course.Photos);
 
                 mapper.Map<CourseUpdate, Course>(request.Course, course);
-                if (imgList.Count > 0) foreach (var img in imgList) course.Photos.Add(new CoursePhoto { Url = img }); 
                 if (!course.Photos.Any(a => a.IsMain)) course.Photos.FirstOrDefault().IsMain = true;
-                
+
+                context.Entry(course).State = EntityState.Modified;
+
                 var success = await context.SaveChangesAsync() > 0;
                 return success ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem for edit course.");
             }

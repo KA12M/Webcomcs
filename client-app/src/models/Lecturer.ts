@@ -1,16 +1,24 @@
+import { RcFile } from "antd/es/upload";
+
 export interface Lecturer {
   id: string;
   fullName: string;
   position: string;
-  image?: string;
-  prefixed: string;
+  image?: string | null;
+  prefix: string;
+  expert?: string;
+  hidden: boolean;
+
+  imagePreview?: string;
 }
 
 export interface LecturerCreate {
   fullName: string;
   position: string;
-  prefixed: string;
-  fileImage: FileList;
+  prefix: string;
+  expert?: string;
+  
+  fileImage: RcFile;
 }
 
 export interface LecturerUpdate extends LecturerCreate {

@@ -9,7 +9,7 @@ import Upload, { RcFile } from "antd/es/upload";
 interface Props {
   setting: Setting;
   changeSetting: (setting: Setting) => void;
-  preview: RcFile | undefined; 
+  preview: RcFile | undefined;
   handleUploadFile: (file: RcFile, FileList: RcFile[]) => void;
 }
 
@@ -27,8 +27,7 @@ const ShowSetting = ({
             src={
               preview
                 ? URL.createObjectURL(preview)
-                : setting &&
-                  setting!.logoPreview! 
+                : setting && setting!.logoPreview!
             }
             width={120}
           />
@@ -36,6 +35,16 @@ const ShowSetting = ({
             <Button type="default">อัพโหลด</Button>
           </Upload>
         </Space>
+      </Descriptions.Item>
+
+      <Descriptions.Item label="ชื่อเว็บ">
+        <MyParagraph
+          keyCurrent="webName"
+          value={setting && setting.webName}
+          onChange={(text: string) => {
+            changeSetting({ ...setting, webName: text });
+          }}
+        />
       </Descriptions.Item>
 
       <Descriptions.Item label="ลิ้งเว็บมหาวิทยาลัย">
@@ -52,6 +61,16 @@ const ShowSetting = ({
         <MyParagraph
           keyCurrent="reg"
           value={setting && setting.registerUrl}
+          onChange={(text: string) => {
+            changeSetting({ ...setting, registerUrl: text });
+          }}
+        />
+      </Descriptions.Item>
+
+      <Descriptions.Item label="ลิ้งเว็บเพจเฟสบุค">
+        <MyParagraph
+          keyCurrent="pageFacebook"
+          value={setting && setting.pageFacebook}
           onChange={(text: string) => {
             changeSetting({ ...setting, registerUrl: text });
           }}

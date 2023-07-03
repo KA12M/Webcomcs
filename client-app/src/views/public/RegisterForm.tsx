@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Select, Space, Typography } from "antd";
 const { Text } = Typography;
@@ -6,47 +6,60 @@ const { Text } = Typography;
 import { useStore } from "../../store/store";
 import LoginForm from "./LoginForm";
 import { observer } from "mobx-react-lite";
+import { UserRole } from "../../constants/UserRole";
+import { BiVoicemail } from "react-icons/bi";
+import { TbUserCircle } from "react-icons/tb";
 
-const roleData = [
-  { label: "บุคคลทั่วไป", value: "Guest" },
-  { label: "นักศึกษา", value: "Student" },
-  { label: "อาจารย์", value: "Lecturer" },
-];
+interface Props {
+  roleLect?: boolean;
+}
 
-const RegisterForm = () => {
+const RegisterForm = ({ roleLect = false }: Props) => {
   const {
-    modalStore,
+    modalStore: { closeModal, openModal },
     userStore: { Loading, register },
+    accountStore: { addUser, loadingSubmit },
   } = useStore();
 
   const [errorList, setErrorList] = useState();
   const [role, setRole] = useState();
+  const [roleData, setRoleData] = useState<any[]>([
+    { label: "บุคคลทั่วไป", value: 0 },
+    { label: "นักศึกษา", value: 1 },
+  ]);
+
+  useEffect(() => {
+    if (roleLect) setRoleData([...roleData, { label: "อาจารย์", value: 2 }]);
+  }, []);
 
   const handleChange = (value: any) => {
     setRole(value);
   };
 
   const handleSubmit = async (values: any) => {
-    await register({ ...values, role }).catch((error) => {
-      setErrorList(error);
-      console.log(error);
-    });
+    if (roleLect) {
+      addUser({ ...values, role })
+        .then(closeModal)
+        .catch((error) => {
+          setErrorList(error);
+          console.log(error);
+        });
+    } else
+      await register({ ...values, role }).catch((error) => {
+        setErrorList(error);
+        console.log(error);
+      });
   };
 
   return (
-    <Form
-      name="normal_login"
-      className="login-form"
-      initialValues={{ remember: true }}
-      onFinish={handleSubmit}
-    >
-      {role === "Student" && (
+    <Form className="login-form" initialValues={{}} onFinish={handleSubmit}>
+      {role === UserRole.student && (
         <Form.Item
           name="username"
           rules={[{ required: true, message: "กรุณากรอกข้อมูล!" }]}
         >
           <Input
-            prefix={<UserOutlined className="site-form-item-icon" />}
+            prefix={<TbUserCircle className="site-form-item-icon" />}
             placeholder="รหัสนักศึกษา"
           />
         </Form.Item>
@@ -65,7 +78,7 @@ const RegisterForm = () => {
         rules={[{ required: true, message: "กรุณากรอกข้อมูล!" }]}
       >
         <Input
-          prefix={<UserOutlined className="site-form-item-icon" />}
+          prefix={<BiVoicemail className="site-form-item-icon" />}
           placeholder="อีเมล"
         />
       </Form.Item>
@@ -73,7 +86,7 @@ const RegisterForm = () => {
         name="password"
         rules={[
           { required: true, message: "กรุณากรอกข้อมูล!" },
-          { min: 8, message: "รหัสผ่านอย่างน้อย 8 อักษร" },
+          { min: 6, message: "รหัสผ่านอย่างน้อย 6 อักษร" },
         ]}
       >
         <Input
@@ -86,9 +99,9 @@ const RegisterForm = () => {
       <Select
         className="w-32 mb-4"
         onChange={handleChange}
-        options={roleData.map((result) => result)}
+        options={roleData}
         value={role}
-        defaultValue={"Guest"}
+        defaultValue={"บุคคลทั่วไป"}
       />
 
       <Form.Item>
@@ -97,16 +110,23 @@ const RegisterForm = () => {
             Array.from(errorList).map((el: any, i: any) => <p key={i}>{el}</p>)}
         </Text>
         <Space>
-          <Button loading={Loading} type="primary" htmlType="submit">
+          <Button
+            loading={Loading || loadingSubmit}
+            type="primary"
+            htmlType="submit"
+          >
             ลงทะเบียน
           </Button>
-          <Button
-            type="default"
-            htmlType="button"
-            onClick={() => modalStore.openModal(<LoginForm />, "เข้าสู่ระบบ")}
-          >
-            เข้าสู่ระบบ
-          </Button>
+
+          {!roleLect && (
+            <Button
+              type="default"
+              htmlType="button"
+              onClick={() => openModal(<LoginForm />, "เข้าสู่ระบบ")}
+            >
+              เข้าสู่ระบบ
+            </Button>
+          )}
         </Space>
       </Form.Item>
     </Form>

@@ -9,77 +9,83 @@ namespace API.Controllers
     public class CourseController : BaseApiController
     {
         [HttpGet]
-        public async Task<ActionResult> GetCourses([FromQuery] CourseParams param)
+        public async Task<ActionResult> getCourses([FromQuery] CourseParams param)
         {
             return HandlePagedResult(await Mediator.Send(new List.Query { Params = param }));
         }
 
+        [HttpGet("generations")]
+        public async Task<ActionResult> getGenerations([FromQuery] GenerationParams param)
+        {
+            return HandlePagedResult(await Mediator.Send(new ListGeneration.Query { Params = param }));
+        }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetCourse(Guid id)
+        public async Task<ActionResult> getCourse(string id)
         {
             return HandleResult(await Mediator.Send(new DetailCourse.Query { Id = id }));
         }
 
-        [HttpGet("{id}/generation/{generationId}")]
-        public async Task<ActionResult> GetCourseGeneration(Guid id, Guid generationId)
+        [HttpGet("{genId}/generation")]
+        public async Task<ActionResult> getCourseGeneration(string genId)
         {
-            return HandleResult(await Mediator.Send(new DetailGeneration.Query { Id = id, GenerationId = generationId }));
+            return HandleResult(await Mediator.Send(new DetailGeneration.Query { Id = genId }));
         }
 
         [Authorize]
-        [HttpPost("{courseId}/joinCourse/{generationId}")]
-        public async Task<ActionResult> Join(Guid courseId, Guid generationId)
+        [HttpPost("joinCourse/{generationId}")]
+        public async Task<ActionResult> postJoin(string generationId)
         {
-            return HandleResult(await Mediator.Send(new Join.Command { CourseId = courseId, GenerationId = generationId }));
+            return HandleResult(await Mediator.Send(new Join.Command { GenerationId = generationId }));
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer, Admin")]
         [HttpPost]
-        public async Task<ActionResult> AddCourse([FromForm] CourseCreate course)
+        public async Task<ActionResult> postAddCourse([FromBody] CourseCreate course)
         {
             return HandleResult(await Mediator.Send(new AddCourse.Command { Course = course }));
         }
 
-        [Authorize]
-        [HttpPost("{id}/AddGen")]
-        public async Task<ActionResult> AddGeneration([FromForm] GenerationCreate generation, [FromRoute] Guid id)
+        [Authorize(Roles = "Lecturer, Admin")]
+        [HttpPost("AddGen")]
+        public async Task<ActionResult> postAddGeneration([FromBody] GenerationCreate generation)
         {
-            return HandleResult(await Mediator.Send(new AddGeneration.Command { CourseId = id, Generation = generation }));
+            return HandleResult(await Mediator.Send(new AddGeneration.Command { Generation = generation }));
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer, Admin")]
         [HttpPut("editCourse")]
-        public async Task<ActionResult> EditCourse([FromForm] CourseUpdate course)
+        public async Task<ActionResult> putEditCourse([FromBody] CourseUpdate course)
         {
             return HandleResult(await Mediator.Send(new EditCourse.Command { Course = course }));
         }
 
-        [Authorize]
-        [HttpPut("{courseId}/editGeneration")]
-        public async Task<ActionResult> EditGeneration([FromForm] GenerationUpdate generation, [FromRoute] Guid courseId)
+        [Authorize(Roles = "Lecturer, Admin")]
+        [HttpPut("editGeneration")]
+        public async Task<ActionResult> putEditGeneration([FromBody] GenerationUpdate generation)
         {
-            return HandleResult(await Mediator.Send(new EditGeneration.Command { Generation = generation, CourseId = courseId }));
+            return HandleResult(await Mediator.Send(new EditGeneration.Command { Generation = generation }));
         }
 
-        [Authorize]
-        [HttpPatch("{courseId}/cancel/{generationId}")]
-        public async Task<ActionResult> CancelGeneration(Guid courseId, Guid generationId)
+        [Authorize(Roles = "Lecturer, Admin")]
+        [HttpPatch("{generationId}/cancel")]
+        public async Task<ActionResult> patchCancelGeneration(string generationId)
         {
-            return HandleResult(await Mediator.Send(new CancelGeneration.Command { CourseId = courseId, GenerationId = generationId }));
+            return HandleResult(await Mediator.Send(new CancelGeneration.Command { GenerationId = generationId }));
         }
 
-        [Authorize]
+        [Authorize(Roles = "Lecturer, Admin")]
         [HttpDelete("{courseId}")]
-        public async Task<ActionResult> DeleteCourse(Guid courseId)
+        public async Task<ActionResult> deleteCourse(string courseId)
         {
             return HandleResult(await Mediator.Send(new DeleteCourse.Command { CourseId = courseId }));
         }
 
-        [Authorize]
-        [HttpDelete("{courseId}/delete/{generationId}")]
-        public async Task<ActionResult> DeleteGeneration(Guid courseId, Guid generationId)
+        [Authorize(Roles = "Lecturer, Admin")]
+        [HttpDelete("{generationId}/removeGen")]
+        public async Task<ActionResult> deleteGeneration(string generationId)
         {
-            return HandleResult(await Mediator.Send(new DeleteGeneration.Command { CourseId = courseId, GenerationId = generationId }));
-        }
+            return HandleResult(await Mediator.Send(new DeleteGeneration.Command { GenerationId = generationId }));
+        } 
     }
 }

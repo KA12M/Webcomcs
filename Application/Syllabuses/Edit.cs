@@ -1,4 +1,5 @@
 
+using System.Xml.Linq;
 using Application.Core;
 using Application.Syllabuses.DTOS;
 using AutoMapper;
@@ -28,16 +29,20 @@ namespace Application.Syllabuses
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
-            { 
+            {
                 var syllabus = await context.Syllabuses
                     .Include(a => a.Subjects)
-                    .Where(a => a.IsUsed)
+                    .Include(a => a.Objectives)
+                    .Include(a => a.Occupations)
                     .FirstOrDefaultAsync(a => a.Id == request.Syllabus.Id);
-                if (syllabus == null) return null;
+                if (syllabus == null) return null; 
 
                 context.Subjects.RemoveRange(syllabus.Subjects);
-                mapper.Map<SyllabusUpdate, Syllabus>(request.Syllabus, syllabus);  
- 
+                context.Objectives.RemoveRange(syllabus.Objectives);
+                context.Occupations.RemoveRange(syllabus.Occupations);
+                mapper.Map(request.Syllabus, syllabus);
+                context.Entry(syllabus).State = EntityState.Modified; 
+
                 var success = await context.SaveChangesAsync() > 0;
                 return success ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem to add data.");
             }

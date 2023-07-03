@@ -8,6 +8,8 @@ import {
   UploadProps,
   Space,
   Tooltip,
+  Col,
+  Row,
 } from "antd";
 import { BiTrash } from "react-icons/bi";
 import { RcFile } from "antd/es/upload";
@@ -89,7 +91,13 @@ const HomePhotoPage = () => {
       body.push({
         key: photo.id,
         title: photo.title,
-        url: <Image width={240} src={photo.url || "error"} />,
+        url: (
+          <Image
+            className="rounded-lg "
+            width={240}
+            src={photo.url || "error"}
+          />
+        ),
         isEnable: (
           <Switch
             checkedChildren="แสดง"
@@ -124,12 +132,8 @@ const HomePhotoPage = () => {
   };
 
   return (
-    <div className="h-screen">
-      <PageTitle
-        homePath="/secret"
-        text="รูปภาพหน้าเว็บ"
-        path={[{ label: "ทั่วไป" }]}
-      />
+    <>
+      <PageTitle text="รูปภาพหน้าเว็บ" />
 
       <Space className="mb-4">
         <Button
@@ -141,8 +145,8 @@ const HomePhotoPage = () => {
         </Button>
       </Space>
 
-      <div className="shadow-46 rounded-xl">
-        {formMode ? (
+      {formMode ? (
+        <div className="shadow-46 rounded-lg ">
           <FormPhoto
             preview={preview}
             formBody={formBody}
@@ -151,13 +155,21 @@ const HomePhotoPage = () => {
             handleSubmit={handleSubmit}
             handleFieldsChange={handleChange}
           />
-        ) : (
-          <Image.PreviewGroup>
-            <MyTable data={tableBody} columns={columns} isLoading={isLoading} />
-          </Image.PreviewGroup>
-        )}
-      </div>
-    </div>
+        </div>
+      ) : (
+        <Row className="shadow-46 rounded-lg">
+          <Col span={24}>
+            <Image.PreviewGroup>
+              <MyTable
+                data={tableBody}
+                columns={columns}
+                isLoading={isLoading}
+              />
+            </Image.PreviewGroup>
+          </Col>
+        </Row>
+      )}
+    </>
   );
 };
 

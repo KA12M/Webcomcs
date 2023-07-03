@@ -6,8 +6,12 @@ namespace Domain
         public string Id { get; set; }
         public string JobName { get; set; }
         public string Position { get; set; }
-        public int Year { get; set; }
+        public DateTime Date { get; set; }
         public string Company { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now; 
+        public string Description { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public bool IsUsed { get; set; } = true;
+
+        public AppUser User { get; set; }
     }
 }

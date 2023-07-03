@@ -17,16 +17,16 @@ interface Props {
 const NewsDetailHeader = ({ news }: Props) => {
   return (
     <>
-      <Title level={2}>
+      <Title level={3}>
         <span className="font-bold">{news?.title}</span>
       </Title>
 
-      {news?.subTitle && (
+      {news.subTitle && (
         <Title level={5}>
-          <Text type="secondary">{news?.subTitle}</Text>
+          <Text type="secondary">{news.subTitle}</Text>
         </Title>
       )}
-      
+
       <Text type="secondary">
         <Space split={<Divider type="vertical" />} wrap>
           <Space>

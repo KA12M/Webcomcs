@@ -3,7 +3,7 @@ namespace Domain.Others
 {
     public class News
     {
-        public Guid Id { get; set; } = new Guid();
+        public string Id { get; set; } 
         public string Title { get; set; }
         public string SubTitle { get; set; }
         public string Body { get; set; }

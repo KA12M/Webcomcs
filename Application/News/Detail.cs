@@ -12,7 +12,7 @@ namespace Application.News
     {
         public class Query : IRequest<Result<NewsDTO>>
         {
-            public Guid Id { get; set; }
+            public string Id { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result<NewsDTO>>

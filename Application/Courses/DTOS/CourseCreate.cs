@@ -1,6 +1,4 @@
 using Domain;
-using Domain.DTOS;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Courses.DTOS
 {
@@ -8,15 +6,11 @@ namespace Application.Courses.DTOS
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public IFormFileCollection FileImages { get; set; }
+        public ICollection<CoursePhoto> Photos { get; set; } = new List<CoursePhoto>();
     }
 
-    public class CourseUpdate
+    public class CourseUpdate : CourseCreate
     {
-        public Guid Id { get; set; } 
-        public string Title { get; set; }
-        public string Description { get; set; }  
-        public ICollection<CoursePhoto> Photos { get; set; } = new List<CoursePhoto>();
-        public IFormFileCollection FileImages { get; set; }  
+        public string Id { get; set; }
     }
 }

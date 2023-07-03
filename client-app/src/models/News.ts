@@ -36,15 +36,20 @@ export interface NewsPhoto {
   id: string;
   url: string;
   isMain: boolean;
+  createdAt: Date;
+
+  previewURL: string;
 }
 
 export class NewsCreate {
   title: string = "";
-  subTitle?: string | undefined;
+  subTitle?: string | null;
   body: string = "";
   fileImages: RcFile[] | undefined;
+
+  newsPhotos?: NewsPhoto[];
 }
 
-export interface NewsUpdate extends NewsCreate {
-  id: string;
+export class NewsUpdate extends NewsCreate {
+  id: string | null = null;
 }

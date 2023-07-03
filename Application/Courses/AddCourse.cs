@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Application.Core;
 using Application.Courses.DTOS;
 using Application.interfaces;
@@ -24,7 +25,7 @@ namespace Application.Courses
             public CommandValidator()
             {
                 RuleFor(a => a.Title).MaximumLength(90).NotEmpty();
-                RuleFor(a => a.FileImages).NotEmpty();
+                RuleFor(a => a.Photos).Must(a => a.Count() > 0).NotEmpty();
             }
         }
 
@@ -35,32 +36,30 @@ namespace Application.Courses
             private readonly IUserAccessor userAccessor;
             private readonly UserManager<AppUser> userManager;
             private readonly IUploadFileAccessor uploadFileAccessor;
+            private readonly IGenerationAccessor generationAccessor;
 
-            public Handler(DataContext context, IMapper mapper, IUserAccessor userAccessor, UserManager<AppUser> userManager, IUploadFileAccessor uploadFileAccessor)
+            public Handler(DataContext context, IMapper mapper, IUserAccessor userAccessor, UserManager<AppUser> userManager, IUploadFileAccessor uploadFileAccessor, IGenerationAccessor generationAccessor)
             {
                 this.context = context;
                 this.mapper = mapper;
                 this.userAccessor = userAccessor;
                 this.userManager = userManager;
                 this.uploadFileAccessor = uploadFileAccessor;
+                this.generationAccessor = generationAccessor;
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var lecturer = await context.Users.FirstOrDefaultAsync(a => a.UserName == userAccessor.GetUsername());
-                var role = await userManager.GetRolesAsync(lecturer);
-                if (!role.Any(a => a.ToLower() == "lecturer")) return Result<Unit>.Failure("Permission denied");
 
                 var newCourse = mapper.Map<Course>(request.Course);
 
-                (string errorMessage, List<string> imgList) = await uploadFileAccessor.UpLoadImages(request.Course.FileImages);
-                if (!errorMessage.IsNullOrEmpty()) return Result<Unit>.Failure(errorMessage);
-                if (imgList.Count > 0) foreach (var img in imgList) newCourse.Photos.Add(new CoursePhoto { Url = img });
+                newCourse.Id = generationAccessor.GenerateId("COURSE");
 
-                newCourse.Photos.FirstOrDefault().IsMain = true; 
-                newCourse.Lecturer = lecturer;
+                newCourse.Photos.FirstOrDefault().IsMain = true;
 
-                context.Courses.Add(newCourse);
+                lecturer.Courses.Add(newCourse);
+
                 var success = await context.SaveChangesAsync() > 0;
                 return success ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem for create new course.");
             }

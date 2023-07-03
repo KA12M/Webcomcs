@@ -1,4 +1,9 @@
 ## Webcomcs
+## Webcomcs - โครงงาน 
+react build project
+```base
+    yarn build --emptyOutDir
+```
 
 ## dotnet API
 

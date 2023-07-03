@@ -1,26 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="image/kru.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>วิทยาการคอมพิวเตอร์-มหาวิทยาลัยราชภัฏกาญจนบุรี</title> 
-    <link rel="stylesheet" href="assets/css/tailwind.output.css" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Kanit:wght@400&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@400&display=swap");
-    </style>
-    <script type="module" crossorigin src="/assets/index-a6545be2.js"></script>
-    <link rel="stylesheet" href="/assets/index-c9c1a0bf.css">
-  </head>
-  <body>
-    <div id="root"></div>
-    
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="https://coms.kru.ac.th/comsci/image/kru.png" />
+  <meta property="og:image" content="https://coms.kru.ac.th/comsci/image/comsci.png" />
+  <title>วิทยาการคอมพิวเตอร์-มหาวิทยาลัยราชภัฏกาญจนบุรี</title>
+
+  <link rel="stylesheet" href="https://coms.kru.ac.th/comsci/css/tailwind.output.css" />
+  <style>
+      @font-face {
+          font-family: "Kanit";
+          src: url("https://coms.kru.ac.th/comsci/fonts/Kanit-Light.ttf");
+      }
+
+    * {
+      font-family: "Kanit", sans-serif;
+    }
+  </style>
+  <script type="module" crossorigin src="https://coms.kru.ac.th/comsci/assets/index-282916a6.js"></script>
+  <link rel="stylesheet" href="https://coms.kru.ac.th/comsci/assets/index-072d7024.css">
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <button id="to-top-button" onclick="goToTop()" title="Go To Top"
+    class="hidden fixed z-90 bottom-4 right-4 border-0 w-10 h-10 rounded-full drop-shadow-md bg-indigo-500 text-white text-3xl font-bold">
+    &uarr;
+  </button>
+
+  
+  <script src="https://coms.kru.ac.th/comsci/js/index.js"></script>
+</body>
+
 </html>

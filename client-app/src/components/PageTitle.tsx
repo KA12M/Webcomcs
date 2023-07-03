@@ -1,6 +1,7 @@
-import { Breadcrumb } from "antd";
 import React from "react";
-import { router } from "../routes/Routes";
+import { Breadcrumb } from "antd";
+import { RouteSecret } from "../constants/RoutePath";
+import { Link } from "react-router-dom";
 
 interface Path {
   label: string;
@@ -8,25 +9,26 @@ interface Path {
 }
 
 interface Props {
-  homePath?: string;
   path?: Path[];
   text: string;
+  tail?: string;
   children?: any;
 }
 
-function PageTitle({ homePath = "/", path = [], text, children }: Props) {
+function PageTitle({ path = [], text, tail, children }: Props) {
   return (
     <>
       <Breadcrumb className="mt-6">
-        <Breadcrumb.Item onClick={() => router.navigate(homePath)}>
-          <a href="#">หน้าหลัก</a>
+        <Breadcrumb.Item>
+          <Link to={RouteSecret.home}>หน้าหลัก</Link>
         </Breadcrumb.Item>
         {path.map((a, i) => (
-          <Breadcrumb.Item key={i} onClick={() => a.route ?? router.navigate(a.route!)}>
-            <a href="#">{a.label}</a>
+          <Breadcrumb.Item key={i}>
+            <Link to={a.route!}>{a.label}</Link>
           </Breadcrumb.Item>
         ))}
         <Breadcrumb.Item>{text}</Breadcrumb.Item>
+        {tail && <Breadcrumb.Item>{tail}</Breadcrumb.Item>}
       </Breadcrumb>
 
       <h1 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">

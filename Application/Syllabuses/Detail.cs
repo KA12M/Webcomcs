@@ -13,7 +13,7 @@ namespace Application.Syllabuses
     {
         public class Query : IRequest<Result<SyllabusDTO>>
         {
-            public Guid Id { get; set; }
+            public string Id { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result<SyllabusDTO>>
@@ -31,11 +31,13 @@ namespace Application.Syllabuses
             {
                 var query = await context.Syllabuses
                     .Include(a => a.Subjects)
+                    .Include(a => a.Objectives)
+                    .Include(a => a.Occupations)
                     .Where(x => x.IsUsed)
                     .FirstOrDefaultAsync(a => a.Id == request.Id);
-                if (query == null) return null; 
+                if (query == null) return null;
 
-                return Result<SyllabusDTO>.Success(mapper.Map<SyllabusDTO>(query));
+                return Result<SyllabusDTO>.Success(mapper.Map<SyllabusDetail>(query));
             }
         }
     }

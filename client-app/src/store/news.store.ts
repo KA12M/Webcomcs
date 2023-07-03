@@ -1,9 +1,9 @@
 import { makeAutoObservable, runInAction } from "mobx";
 
-import { News, NewsCreate, NewsDetail, NewsPhoto } from "../models/News";
 import agent from "../api/agent";
+import URLImage from "../utils/URL";
 import { Pagination, PagingParams } from "../models/Pagination";
-import URLImage from "../utils/URLImage";
+import { News, NewsCreate, NewsDetail, NewsPhoto } from "../models/News";
 
 class NewsSTore {
   newsRegistry = new Map<string, News>();
@@ -13,7 +13,7 @@ class NewsSTore {
   tableBody: any[] = [];
 
   pagination: Pagination | null = null;
-  pagingParams: PagingParams = new PagingParams(1, 10);
+  pagingParams: PagingParams = new PagingParams(1, 8);
   predicate = new Map().set("ShowAll", false);
   loading: boolean = false;
   submitLoading: boolean = false;
@@ -33,7 +33,7 @@ class NewsSTore {
     });
   };
 
-  get axiosParams() {
+  private get axiosParams() {
     const params = new URLSearchParams();
     params.append("currentPage", this.pagingParams.currentPage.toString());
     params.append("pageSize", this.pagingParams.pageSize.toString());
@@ -48,6 +48,7 @@ class NewsSTore {
     try {
       var res = await agent.Newses.list(this.axiosParams);
       runInAction(() => {
+        this.newsRegistry.clear();
         res.data.forEach(this.setNews);
         this.setPagination(res.pagination);
         this.stopLoading();
@@ -82,7 +83,7 @@ class NewsSTore {
 
   setNewsPhotos = (photos: NewsPhoto[]) => {
     return photos.map((photo) => {
-      photo.url = URLImage(photo.url);
+      photo.previewURL = URLImage(photo.url);
       return photo;
     });
   };
@@ -93,11 +94,30 @@ class NewsSTore {
   clearFormBody = () => (this.formBody = new NewsCreate());
 
   addNews = async () => {
-    if (!this.formBody.fileImages) throw "กรุณาอัพโหลดรูปภาพ";
+    if (!this.formBody.fileImages || this.formBody.fileImages.length < 1)
+      throw "กรุณาอัพโหลดรูปภาพประกอบ";
     this.submitLoading = true;
     try {
       await agent.Newses.create(this.formBody);
+      runInAction(() => {
+        this.clearFormBody();
+        this.submitLoading = false;
+      });
+    } catch (error) {
       runInAction(() => (this.submitLoading = false));
+      throw error;
+    }
+  };
+
+  editNews = async (id: string) => {
+    this.submitLoading = true;
+    try {
+      await agent.Newses.edit(Object.assign(this.formBody!, { id }));
+      runInAction(() => {
+        this.clearFormBody();
+        this.clearSelectNews();
+        this.submitLoading = false;
+      });
     } catch (error) {
       runInAction(() => (this.submitLoading = false));
       throw error;
@@ -113,7 +133,9 @@ class NewsSTore {
           isHidden: !news.isHidden,
         });
       });
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
   };
 
   deleteNews = async (id: string) => {
@@ -122,6 +144,28 @@ class NewsSTore {
       await agent.Newses.delete(id);
       runInAction(() => {
         this.newsRegistry.delete(id);
+        this.loading = false;
+      });
+    } catch (error) {
+      runInAction(() => (this.loading = false));
+      throw error;
+    }
+  };
+
+  setEditCurrentNews = () =>
+    (this.formBody = Object.assign({}, this.formBody, this.newsSelected));
+
+  setFormBody = (data: {}) =>
+    (this.formBody = Object.assign({}, this.formBody, data));
+
+  deletePhotoNews = async (id: string) => {
+    this.loading = true;
+    try {
+      await agent.Newses.deletePhoto(id);
+      runInAction(() => {
+        this.formBody.newsPhotos = this.formBody.newsPhotos?.filter(
+          (a) => a.id != id
+        );
         this.loading = false;
       });
     } catch (error) {

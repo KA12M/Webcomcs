@@ -3,6 +3,7 @@ using Application.interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using SixLabors.ImageSharp.Formats.Jpeg;
 
 namespace Infrastructure.utils
 {
@@ -30,7 +31,7 @@ namespace Infrastructure.utils
 
         public bool IsUpload(IFormFileCollection formFiles) => formFiles == null ? false : formFiles.Count > 0;
 
-        private async Task<List<string>> Upload(IFormFileCollection formFiles, string type = "image")
+        private async Task<List<string>> UploadAsync(IFormFileCollection formFiles, string type = "image", int quality = 70, bool saveOriginalFile = false)
         {
             var listFileName = new List<string>();
             var uploadPath = $"{webHostEnvironment.WebRootPath}/{type}-upload/";
@@ -40,7 +41,12 @@ namespace Infrastructure.utils
                 string fileName = Guid.NewGuid().ToString("N") + Path.GetExtension(formFile.FileName);
                 string fullName = uploadPath + fileName;
 
-                using (var stream = File.Create(fullName)) await formFile.CopyToAsync(stream);
+                if (type == "file" || saveOriginalFile) using (var stream = File.Create(fullName)) await formFile.CopyToAsync(stream);
+                else using (var image = Image.Load(formFile.OpenReadStream()))
+                    {
+                        var encoder = new JpegEncoder { Quality = quality };
+                        image.Save(fullName, encoder);
+                    }
                 listFileName.Add(fileName);
             }
             return listFileName;
@@ -68,7 +74,7 @@ namespace Infrastructure.utils
 
         public bool ValidationSize(long fileSize) => (int.Parse(configuration["Upload:FileSizeLimit"])) > fileSize;
 
-        public async Task<(string errorMessage, string imageName)> UpLoadImageOne(IFormFileCollection formFiles)
+        public async Task<(string errorMessage, string imageName)> UpLoadImageOneAsync(IFormFileCollection formFiles, int quality = 70, bool saveOriginalFile = false)
         {
             string errorMessage = string.Empty;
             string imageName = string.Empty;
@@ -76,12 +82,12 @@ namespace Infrastructure.utils
             {
                 errorMessage = Validation(formFiles);
                 if (string.IsNullOrEmpty(errorMessage))
-                    imageName = (await Upload(formFiles))[0];
+                    imageName = (await UploadAsync(formFiles, "image", quality, saveOriginalFile))[0];
             }
             return (errorMessage, imageName);
         }
 
-        public async Task<(string errorMessage, List<string> imageName)> UpLoadImages(IFormFileCollection formFiles)
+        public async Task<(string errorMessage, List<string> imageName)> UpLoadImagesAsync(IFormFileCollection formFiles, int quality = 70, bool saveOriginalFile = false)
         {
             string errorMessage = string.Empty;
             List<string> imageName = new List<string>();
@@ -89,17 +95,17 @@ namespace Infrastructure.utils
             {
                 errorMessage = Validation(formFiles);
                 if (string.IsNullOrEmpty(errorMessage))
-                    imageName = (await Upload(formFiles));
+                    imageName = (await UploadAsync(formFiles, "image", quality, saveOriginalFile));
             }
             return (errorMessage, imageName);
         }
 
-        public async Task<string> UpLoadFileOne(IFormFileCollection formFiles)
+        public async Task<string> UpLoadFileOneAsync(IFormFileCollection formFiles)
         {
             string imageName = string.Empty;
             if (IsUpload(formFiles))
             {
-                imageName = (await Upload(formFiles, "file"))[0];
+                imageName = (await UploadAsync(formFiles, "file"))[0];
             }
             return imageName;
         }

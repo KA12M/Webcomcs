@@ -10,15 +10,15 @@ interface Props {
 const NewsDetailImageGrid = ({ photos }: Props) => {
   return (
     <Image.PreviewGroup>
-      <Title level={4} className="mt-8">
+      <Title level={5} className="mt-8">
         <span>รูปภาพ</span>
       </Title>
       <Row wrap gutter={[16, 16]}>
         {photos.map((img) => (
           <Col key={img.id} xs={24} md={12} lg={6}>
             <Image
-              src={img.url}
-              className="object-cover object-top shadow-46"
+              src={img.previewURL}
+              className="rounded-xl object-cover object-top shadow-46"
               width="100%"
               height={240}
             />

@@ -13,7 +13,7 @@ namespace Application.Syllabuses
     {
         public class Query : IRequest<Result<List<SyllabusDTO>>>
         {
-
+            public SyllabusParam Param { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result<List<SyllabusDTO>>>
@@ -31,11 +31,13 @@ namespace Application.Syllabuses
             {
                 var query = context.Syllabuses
                     .Include(a => a.Subjects)
+                    .Include(a => a.Objectives)
+                    .Include(a => a.Occupations)
                     .Where(x => x.IsUsed)
-                    .ProjectTo<SyllabusDTO>(mapper.ConfigurationProvider)
+                    .Where(a => request.Param.ShowHidden ? true : !a.Hidden)
                     .AsQueryable();
 
-                return Result<List<SyllabusDTO>>.Success(await query.ToListAsync());
+                return Result<List<SyllabusDTO>>.Success(await query.ProjectTo<SyllabusDTO>(mapper.ConfigurationProvider).ToListAsync());
             }
         }
     }

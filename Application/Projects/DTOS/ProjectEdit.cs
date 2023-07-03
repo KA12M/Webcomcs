@@ -7,13 +7,14 @@ namespace Application.Projects.DTOS
 {
     public class ProjectEdit
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string NameTH { get; set; }
         public string NameEN { get; set; }
         public string Description { get; set; } 
         public string VideoUrl { get; set; }
         public string WebUrl { get; set; }
         public string GithubUrl { get; set; }
+        public string KeyWords { get; set; } = String.Empty;
         public ICollection<Consultant> Consultants { get; set; } 
 
         public IFormFileCollection FileImage { get; set; }

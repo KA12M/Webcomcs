@@ -13,7 +13,7 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new GetOne.Query()));
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<ActionResult> UpdateSetting([FromForm] SystemSettingUpdate setting)
         {

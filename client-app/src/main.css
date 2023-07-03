@@ -1,6 +1,54 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+  
+.ant-descriptions {
+  width: auto;
+}
+ 
+.ant-descriptions-item-content {
+  white-space: pre-wrap;
+}
+
+.chart-container {
+  height: 160px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .chart-container {
+    height: 300px;
+    width: 100%;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 768px) {
+  .chart-container {
+    height: 300px;
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .chart-container {
+    height: 400px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) { 
+  .ant-descriptions {
+    width: 100%;
+  }
+}
+
+.mapboxgl-canvas-container {
+  cursor: pointer;
+}
+
+.rcw-launcher {
+  @apply flex m-0 items-center;
+}
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -13,12 +61,20 @@
 }
 
 * {
-  font-family: "Kanit", sans-serif;
   box-sizing: border-box;
 }
 
 body {
   @apply m-0 flex flex-col h-screen;
+}
+
+.ant-collapse-content-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-collapse-content-box .ant-collapse-content {
+  width: 100%;
 }
 
 .navbar-logo {
@@ -35,26 +91,32 @@ body {
   box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
 }
 
+.ant-divider-horizontal {
+  border-top: 2px solid #e8e8e8;
+  margin: 32px 0;
+  width: 100%;
+}
+
 .space-top {
   @apply pt-36;
 }
 
 .carousel--image {
-  margin-top: -15px;
+  /* margin-top: -15px; */
   @apply w-full;
 }
 
 .carousel--image .img {
-  height: 629px;
-  @apply object-cover object-top;
+  max-height: 680px;
+  @apply object-cover object-top bg-no-repeat;
 }
 
 .menu--bar {
-  @apply w-full fixed top-0 left-0 z-50 shadow-46 px-56 bg-white;
+  @apply w-full sticky top-0 left-0 z-50 shadow-lg px-56 bg-white bg-opacity-90;
 }
 
 .menu--container {
-  @apply items-center justify-between py-8 flex md:px-10;
+  @apply items-center justify-between py-8 flex md:px-10 backdrop-filter backdrop-blur-md;
 }
 
 .menu--left {
@@ -88,7 +150,7 @@ body {
 }
 
 .navbar {
-  @apply flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white;
+  @apply flex flex-col p-4 mt-4 border border-gray-100 rounded-lg  md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white bg-transparent;
 }
 
 @media (max-width: 1539px) {
@@ -140,4 +202,8 @@ img.ant-image-preview-img {
 /* secret layout */
 .appSecret {
   @apply h-screen flex flex-col;
+}
+
+.hover-card {
+  @apply hover:shadow-xl hover:transform hover:scale-105 duration-300;
 }

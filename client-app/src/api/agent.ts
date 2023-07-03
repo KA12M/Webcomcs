@@ -11,9 +11,14 @@ import { HomePhotos } from "./homePhoto.apt";
 import { PaginatedResult } from "../models/Pagination";
 import { Newses } from "./news.api";
 import { router } from "../routes/Routes";
+import { Lecturers } from "./lecturer.api";
+import { JobHistories } from "./jobHistory.api";
+import { Courses } from "./course.api";
+import { config } from "../constants/config";
+import { ComSciSubjects } from './comsci.subject.api';
+import { ReportAPI } from './report.api';
 
-axios.defaults.baseURL =
-  import.meta.env.VITE_API_URL || "http://localhost:8000";
+axios.defaults.baseURL = config.baseAPI || "http://localhost:8000";
 
 axios.defaults.withCredentials = true;
 
@@ -37,7 +42,7 @@ axios.interceptors.request.use((config: any) => {
 
 axios.interceptors.response.use(
   async (res) => {
-    if (import.meta.env.VITE_NODE_ENV === "development") await wait(300);
+    if (import.meta.env.VITE_NODE_ENV === "development") await wait(500);
     const pagination = res.headers["pagination"];
     if (pagination) {
       res.data = new PaginatedResult(res.data, JSON.parse(pagination));
@@ -51,9 +56,6 @@ axios.interceptors.response.use(
       case 400:
         if (typeof data === "string") {
           message.warning(data, 3);
-        }
-        if (config.method === "get" && data.errors.hasOwnProperty("id")) {
-          router.navigate("*");
         }
         if (data.errors) {
           const modelStateErrors = [];
@@ -95,6 +97,8 @@ export const req = {
     axios.post<T>(url, body, multipleDataOption).then(responseBody),
   put: <T>(url: string, body = {}, options = {}) =>
     axios.put<T>(url, body, options).then(responseBody),
+  putForm: <T>(url: string, body = {}) =>
+    axios.put<T>(url, body, multipleDataOption).then(responseBody),
   patch: <T>(url: string, body = {}, options = {}) =>
     axios.patch<T>(url, body, options).then(responseBody),
   delete: <T>(url: string) => axios.delete<T>(url).then(responseBody),
@@ -108,4 +112,9 @@ export default {
   SystemSettings,
   HomePhotos,
   Newses,
+  Lecturers,
+  JobHistories,
+  Courses,
+  ComSciSubjects,
+  ReportAPI
 };

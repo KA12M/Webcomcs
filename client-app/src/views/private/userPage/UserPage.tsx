@@ -1,16 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { Badge } from "@windmill/react-ui";
-import { DeleteOutlined } from "@ant-design/icons";
-import { Row, Col, Avatar, Button } from "antd";
+import React, { useEffect } from "react";
+import {
+  Row,
+  Col,
+  Avatar,
+  Button,
+  Popconfirm,
+  Space,
+  Dropdown,
+  Badge,
+} from "antd";
 import { observer } from "mobx-react-lite";
 
 import { useStore } from "../../../store/store";
 import PageTitle from "../../../components/PageTitle";
 import UserFilter from "./UserFilter";
 import UserTable from "./UserTable";
+import {
+  RoleLabel,
+  UserRole,
+  badgeRoleTypes,
+} from "../../../constants/UserRole";
+import { BiDotsHorizontalRounded, BiTrash } from "react-icons/bi";
+import { Link } from "react-router-dom";
+import { RouteSecret, RoutePath } from "../../../constants/RoutePath";
+import FormEditUser from "./components/FormEditUser";
 
 const UserPage = () => {
   const {
+    modalStore: { openModal },
     accountStore: {
       loadAccounts,
       setTable,
@@ -25,44 +42,65 @@ const UserPage = () => {
       title: "ลำดับ",
       key: "index",
       dataIndex: "index",
-      align: "center",
-    },
-    {
-      title: "ผู้ใช้",
-      key: "image",
-      dataIndex: "image",
-      align: "center",
     },
     {
       title: "ชื่อ-นามสกุล",
       key: "fullName",
       dataIndex: "fullName",
-      align: "center",
     },
     {
       title: "อีเมล",
       key: "email",
       dataIndex: "email",
-      align: "center",
     },
     {
       title: "สถานะ",
       key: "isRole",
       dataIndex: "isRole",
-      align: "center",
     },
     {
       title: "จัดการ",
       key: "action",
-      align: "center",
       render: (record: any) => (
-        <Button
-          danger
-          type="primary"
-          onClick={() => alert(JSON.stringify(record, null, 2))}
-        >
-          <DeleteOutlined />
-        </Button>
+        <Space wrap>
+          <Popconfirm
+            placement="topRight"
+            title={"ลบ"}
+            description={"ข้อมูลจะถูกลบออกจากระบบ"}
+            onConfirm={() => {}}
+            disabled={record.role == UserRole.admin}
+          >
+            <Button
+              danger
+              disabled={record.role == UserRole.admin}
+              shape="round"
+              children={<BiTrash size={18} />}
+              type="primary"
+            />
+          </Popconfirm>
+          <Dropdown
+            disabled={record.role == UserRole.admin}
+            menu={{
+              items: [
+                {
+                  key: "1",
+                  label: "แก้ไข",
+                  onClick: () =>
+                    openModal(
+                      <FormEditUser
+                        username={record.key}
+                        roleCurrent={record.role}
+                      />
+                    ),
+                },
+              ],
+            }}
+            placement="top"
+            arrow
+          >
+            <Button shape="round" children={<BiDotsHorizontalRounded />} />
+          </Dropdown>
+        </Space>
       ),
     },
   ];
@@ -71,37 +109,31 @@ const UserPage = () => {
     loadAccounts().then(mapTable);
   }, [pagingParams]);
 
-  const roleBadge = (role: number) => {
-    switch (role) {
-      case 0:
-        return <Badge type="neutral">ทั่วไป</Badge>;
-      case 1:
-        return <Badge type="success">นักศึกษา</Badge>;
-      case 2:
-        return <Badge type="primary">อาจารย์</Badge>;
-    }
-  };
-
   const mapTable = () => {
     const body: any = [];
-    Array.from(accountsRegistry.values())?.forEach((user, i) =>
+    Array.from(accountsRegistry.values()).forEach((user, i) =>
       body.push({
         key: user.username,
+        role: user.isRole,
         index: (pagingParams.currentPage - 1) * pagingParams.pageSize + (i + 1),
-        fullName: user.fullName,
+        fullName: (
+          <Space wrap>
+            <Link to={RoutePath.accountDetail(user.username)}>
+              <Avatar src={user.image} icon={user.fullName[0]} />
+            </Link>
+            <Link to={RoutePath.accountDetail(user.username)}>
+              {user.fullName}
+            </Link>
+          </Space>
+        ),
         email: user.email,
-        isRole: roleBadge(user.isRole),
-        image: (
-          <Avatar
-            size={64}
-            icon={
-              user.image ? (
-                <img src={user.image} />
-              ) : (
-                user.fullName[0].toLocaleUpperCase()
-              )
-            }
-          />
+        isRole: (
+          <Badge
+            color={"#faad14" || badgeRoleTypes[user.isRole!][0]}
+            style={{ backgroundColor: "#faad14" }}
+          >
+            <p>{RoleLabel[user.isRole!]["th"]}</p>
+          </Badge>
         ),
       })
     );
@@ -109,19 +141,17 @@ const UserPage = () => {
   };
 
   return (
-    <div className="h-screen">
-      <PageTitle homePath="/secret" text="ตารางรายชื่อผู้ใช้" />
+    <>
+      <PageTitle text="ตารางรายชื่อผู้ใช้" />
 
       <Row className="shadow-46 rounded-xl">
-        <Col sm={24} xl={6} className="p-2">
+        <Col span={24}>
           <UserFilter mapTable={mapTable} />
-        </Col>
 
-        <Col sm={24} xl={18}>
           <UserTable data={tableBody} columns={columns} />
         </Col>
       </Row>
-    </div>
+    </>
   );
 };
 

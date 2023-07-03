@@ -12,8 +12,7 @@ namespace Application.Courses
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Guid CourseId { get; set; }
-            public Guid GenerationId { get; set; }
+            public string GenerationId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -29,18 +28,16 @@ namespace Application.Courses
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var user = await context.Users
-                    .Include(a => a.Courses)
-                        .ThenInclude(a => a.Generations)
-                    .FirstOrDefaultAsync(a => a.UserName == userAccessor.GetUsername());
-
-                var course = user.Courses.FirstOrDefault(a => a.Id == request.CourseId);
-                if (course == null) return null;
-
-                var generationCurrent = course.Generations.FirstOrDefault(a => a.Id == request.GenerationId);
+                var generationCurrent = await context.Generations
+                    .Include(a => a.Course)
+                        .ThenInclude(a => a.Lecturer)
+                    .FirstOrDefaultAsync(a => a.Id == request.GenerationId);
                 if (generationCurrent == null) return null;
-                
+
+                if (generationCurrent.Course.Lecturer.UserName != userAccessor.GetUsername()) return Result<Unit>.Failure("Problem update status of course.");
+
                 generationCurrent.IsCancelled = !generationCurrent.IsCancelled;
+                
                 var success = await context.SaveChangesAsync() > 0;
                 return success ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem update status of course.");
             }

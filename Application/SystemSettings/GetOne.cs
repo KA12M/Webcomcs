@@ -30,7 +30,8 @@ namespace Application.SystemSettings
             public async Task<Result<SystemSettingDTO>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var query = await context.SystemSettings.FirstOrDefaultAsync();
-
+                if (query == null) return null;
+                
                 return Result<SystemSettingDTO>.Success(mapper.Map<SystemSetting, SystemSettingDTO>(query));
             }
         }

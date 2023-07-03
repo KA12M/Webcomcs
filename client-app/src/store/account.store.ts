@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
-import { Profile } from "../models/User";
-import URLImage from "../utils/URLImage";
+import { Profile, registerDTO } from "../models/User";
+import URLImage from "../utils/URL";
 import { PagingParams, Pagination } from "../models/Pagination";
 
 export default class AccountStore {
@@ -10,14 +10,15 @@ export default class AccountStore {
 
   pagination: Pagination | null = null;
   pagingParams: PagingParams = new PagingParams(1, 10);
-  predicate = new Map().set("role", "all");
+  predicate = new Map().set("role", "");
   loading: boolean = false;
+  loadingSubmit: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  get axiosParams() {
+  private get axiosParams() {
     const params = new URLSearchParams();
     params.append("currentPage", this.pagingParams.currentPage.toString());
     params.append("pageSize", this.pagingParams.pageSize.toString());
@@ -31,6 +32,8 @@ export default class AccountStore {
 
   setRole = (role: string) => this.predicate.set("role", role);
   setSearch = (word: string) => this.predicate.set("search", word);
+  setPredicate = (obj: {}) =>
+    Object.entries(obj).forEach(([key, val]) => this.predicate.set(key, val));
   setPagination = (pagination: Pagination) => (this.pagination = pagination);
   setPagingParams = (page: number, pageSize: number) => {
     this.pagingParams = { currentPage: page, pageSize };
@@ -40,13 +43,13 @@ export default class AccountStore {
     });
   };
 
-  setTable = (temp: any[]) => (this.tableBody = temp); 
+  setTable = (temp: any[]) => (this.tableBody = temp);
 
   loadAccounts = async () => {
     this.setLoading(true);
     this.accountsRegistry.clear();
     try {
-      var result = await agent.Profiles.list(this.axiosParams); 
+      var result = await agent.Profiles.list(this.axiosParams);
       this.setPagination(result.pagination);
       runInAction(() => {
         result.data.forEach(this.setAccount);
@@ -63,4 +66,29 @@ export default class AccountStore {
     this.accountsRegistry.set(account.username, account);
   };
 
+  editUser = async (data: any) => {
+    this.loadingSubmit = true;
+    try {
+      await agent.Accounts.editUser(data);
+      runInAction(() => {
+        this.loadingSubmit = false;
+      });
+    } catch (error) {
+      runInAction(() => (this.loadingSubmit = false));
+      throw error;
+    }
+  };
+
+  addUser = async (data: registerDTO) => {
+    this.loadingSubmit = true;
+    try {
+      await agent.Accounts.register(data);
+      runInAction(() => { 
+        this.loadingSubmit = false;
+      });
+    } catch (error) {
+      runInAction(() => (this.loadingSubmit = false));
+      throw error;
+    }
+  };
 }

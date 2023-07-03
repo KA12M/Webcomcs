@@ -11,7 +11,7 @@ namespace Application.Courses
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Guid CourseId { get; set; } 
+            public string CourseId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -27,14 +27,13 @@ namespace Application.Courses
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var course = await context.Courses 
+                var course = await context.Courses
                     .Include(a => a.Lecturer)
-                    .FirstOrDefaultAsync(a => a.Id == request.CourseId);
+                    .FirstOrDefaultAsync(a => a.Id == request.CourseId && a.Lecturer.UserName == userAccessor.GetUsername());
                 if (course == null) return null; 
 
-                if (course.Lecturer.UserName != userAccessor.GetUsername()) return Result<Unit>.Failure("Permission denied.");
-
                 course.IsUsed = !course.IsUsed;
+                
                 var success = await context.SaveChangesAsync() > 0;
                 return success ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem deleting course.");
             }

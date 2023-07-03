@@ -32,6 +32,7 @@ namespace Application.Lecturers
 
                 await uploadFileAccessor.Delete(lecturer.Image);
                 context.Lecturers.Remove(lecturer);
+
                 var success = await context.SaveChangesAsync() > 0;
                 return success ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem to delete data.");
             }

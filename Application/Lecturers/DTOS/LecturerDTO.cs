@@ -7,6 +7,8 @@ namespace Application.Lecturers.DTOS
         public string FullName { get; set; }
         public string Position { get; set; }
         public string Image { get; set; }
-        public string Prefixed { get; set; }
+        public string Prefix { get; set; }
+        public string Expert { get; set; }
+        public bool Hidden { get; set; }
     }
 }

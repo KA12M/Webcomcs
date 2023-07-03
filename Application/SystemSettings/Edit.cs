@@ -4,7 +4,6 @@ using Application.Core;
 using Application.interfaces;
 using Application.SystemSettings.DTOS;
 using AutoMapper;
-using Domain.Others;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -36,11 +35,13 @@ namespace Application.SystemSettings
             {
                 var setting = await context.SystemSettings.FirstOrDefaultAsync();
 
-                (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOne(request.Setting.FileImages);
+                (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOneAsync(request.Setting.FileImages, 100, true);
                 if (!errorMessage.IsNullOrEmpty()) return Result<Unit>.Failure(errorMessage);
 
                 mapper.Map(request.Setting, setting);
                 if (!imageName.IsNullOrEmpty()) setting.Logo = imageName;
+
+                context.Entry(setting).State = EntityState.Modified;
 
                 var success = await context.SaveChangesAsync() > 0;
                 return success ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem to edit setting.");

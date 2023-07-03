@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 import { DownOutlined, MenuOutlined } from "@ant-design/icons";
 import { Avatar, Dropdown, MenuProps, Space } from "antd";
 import { router } from "../../routes/Routes";
+import { RoutePath, RouteSecret } from "../../constants/RoutePath";
 
 function MyHeader() {
   const {
@@ -16,13 +17,13 @@ function MyHeader() {
     {
       key: "me",
       label: "บัญชี",
-      onClick: () => router.navigate("/profile"),
+      onClick: () => router.navigate(RoutePath.account),
     },
     user && user!.roles && user!.roles!.some((a) => a == "Admin")
       ? {
           key: "3",
           label: "แอดมิน",
-          onClick: () => router.navigate("/secret"),
+          onClick: () => router.navigate(RouteSecret.home),
         }
       : null,
     {
@@ -34,8 +35,8 @@ function MyHeader() {
   ];
 
   return (
-    <header className="z-40 py-4 bg-white shadow-bottom dark:bg-gray-800">
-      <div className="container flex items-center justify-between h-full px-6 mx-auto  dark:text-purple-300">
+    <header className="z-40 py-4 bg-white shadow-bottom">
+      <div className="container flex items-center justify-between h-full px-6 mx-auto ">
         {/* <!-- Mobile hamburger --> */}
         <button
           className="p-1 mr-5 -ml-1 rounded-md lg:hidden focus:outline-none focus:shadow-outline-purple"
@@ -53,11 +54,7 @@ function MyHeader() {
           <Dropdown menu={{ items }} className="cursor-pointer">
             <a onClick={(e) => e.preventDefault()}>
               <Space>
-                <Avatar icon={user!.image && <img src={user!.image!} />}>
-                  {user!.fullName[0].toUpperCase()}
-                  {user!.fullName.split(" ").length > 1 &&
-                    user!.fullName.split(" ")[1][0]}
-                </Avatar>
+                <Avatar src={user!.image!} icon={user!.fullName[0]} />
                 {user!.fullName.split(" ")[0]}
                 <DownOutlined />
               </Space>

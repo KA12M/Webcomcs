@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Setting } from "../models/Setting";
 import agent from "../api/agent";
-import URLImage from "../utils/URLImage";
+import URLImage from "../utils/URL";
 
 export class settingStore {
   setting: Setting | null = null;
@@ -17,6 +17,13 @@ export class settingStore {
       const result = await agent.SystemSettings.get();
       runInAction(() => {
         result.logoPreview = result.logo! && URLImage(result.logo);
+        result.youtubeList = result.videoUrl
+          ? Array.from(result.videoUrl!.split(","))
+          : [];
+        result.latAndLng = {
+          lat: result.location.split(",")[0],
+          lng: result.location.split(",")[1],
+        };
         this.setting = result;
         this.loading = false;
       });
@@ -28,6 +35,9 @@ export class settingStore {
 
   updateSetting = async (setting: Setting) => {
     this.loading = true;
+    setting.videoUrl =
+      setting.youtubeList!.length > 0 ? setting.youtubeList!.join() : "";
+    setting.location = `${setting.latAndLng.lat},${setting.latAndLng.lng}`;
     try {
       await agent.SystemSettings.editSetting(setting);
       runInAction(() => {
@@ -40,5 +50,6 @@ export class settingStore {
     }
   };
 
-  changeSetting = (setting: Setting) => (this.setting = setting);
+  changeSetting = (obj: {}) =>
+    (this.setting = Object.assign(this.setting!, obj));
 }

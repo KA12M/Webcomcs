@@ -14,7 +14,7 @@ namespace Application.Projects
     {
         public class Command : IRequest<Result<ProjectDTO>>
         {
-            public Guid Id { get; set; }
+            public string Id { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<ProjectDTO>>

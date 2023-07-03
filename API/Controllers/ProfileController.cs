@@ -9,9 +9,15 @@ namespace API.Controllers
     public class ProfileController : BaseApiController
     {
         [HttpGet]
-        public async Task<ActionResult<PagedList<Profile>>> GetProfiles([FromQuery] ProfileParams param)
-        { 
+        public async Task<ActionResult<PagedList<Application.Profiles.DTOS.Profile>>> GetProfiles([FromQuery] ProfileParams param)
+        {
             return HandlePagedResult(await Mediator.Send(new List.Query { Params = param }));
+        }
+        
+        [HttpGet("{Username}")]
+        public async Task<ActionResult<PagedList<Application.Profiles.DTOS.Profile>>> GetProfile([FromRoute] string Username)
+        {
+            return HandleResult(await Mediator.Send(new Application.Profiles.Profile.Command { Username = Username }));
         }
 
     }

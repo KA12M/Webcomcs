@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { HomePhoto, PhotoCreate } from "../models/HomePhoto";
 import agent from "../api/agent";
-import URLImage from "../utils/URLImage";
+import URLImage from "../utils/URL";
 
 export class homePhotoStore {
   photoRegistry = new Map<string, HomePhoto>();

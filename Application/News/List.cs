@@ -1,11 +1,8 @@
 using Application.Core;
-using Application.interfaces;
 using Application.News.DTOS;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Domain;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
@@ -31,15 +28,14 @@ namespace Application.News
             }
 
             public async Task<Result<PagedList<NewsPreviewDTO>>> Handle(Query request, CancellationToken cancellationToken)
-            {
+            { 
                 var query = context.Newses
                     .Include(a => a.NewsPhotos)
                     .OrderByDescending(a => a.CreatedAt)
                     .AsQueryable();
 
                 if (!request.Params.ShowAll) query = query.Where(a => !a.IsHidden);
-
-
+ 
                 if (!request.Params.Search.IsNullOrEmpty())
                     query = query.Where(a => a.Title.Contains(request.Params.Search) || a.CreatedAt.ToString().Contains(request.Params.Search));
 

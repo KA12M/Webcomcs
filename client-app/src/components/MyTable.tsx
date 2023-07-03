@@ -1,24 +1,26 @@
 import React from "react";
-import {
-  Empty,
-  Skeleton,
-  Table,
-  TablePaginationConfig,
-  TableProps,
-} from "antd";
+import { Empty, Skeleton, Table, TablePaginationConfig } from "antd";
 
 interface Props {
   data: any;
   columns: any;
   isLoading: boolean;
   pagination?: false | TablePaginationConfig | undefined;
+  title?: () => any;
 }
 
-const MyTable = ({ data, columns, isLoading, pagination = false }: Props) => {
+const MyTable = ({
+  data,
+  columns,
+  isLoading,
+  pagination = false,
+  title,
+}: Props) => {
   return (
     <Table
-      className="py-4 px-2 md:py-8 md:px-4 xl:py-12 xl:px-8"
+      className="shadow-md rounded-lg"
       pagination={pagination}
+      title={title}
       dataSource={data!}
       columns={columns}
       loading={isLoading}

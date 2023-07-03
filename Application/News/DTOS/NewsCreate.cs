@@ -1,4 +1,5 @@
 
+using Domain.Others;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.News.DTOS
@@ -13,6 +14,7 @@ namespace Application.News.DTOS
 
     public class NewsUpdate : NewsCreate
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
+        public ICollection<NewsPhoto> NewsPhotos { get; set; } = new List<NewsPhoto>();
     }
 }

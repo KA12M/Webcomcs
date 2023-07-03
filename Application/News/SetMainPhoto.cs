@@ -11,7 +11,7 @@ namespace Application.News
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Guid Id { get; set; }
+            public string Id { get; set; }
             public Guid ImageId { get; set; }
         }
 

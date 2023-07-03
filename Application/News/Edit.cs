@@ -26,7 +26,7 @@ namespace Application.News
             {
                 RuleFor(x => x.Title).MaximumLength(150).NotEmpty();
                 RuleFor(x => x.SubTitle).MaximumLength(300);
-                RuleFor(x => x.Body).NotEmpty(); 
+                RuleFor(x => x.Body).NotEmpty();
             }
         }
 
@@ -45,20 +45,24 @@ namespace Application.News
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var news = await context.Newses
-                    .Include(a => a.NewsPhotos)
+                var news = await context.Newses 
                     .FirstOrDefaultAsync(a => a.Id == request.News.Id);
                 if (news == null) return null;
-                
-                (string errorMessage, List<string> imageNameList) = await uploadFileAccessor.UpLoadImages(request.News.FileImages);
-                if (!errorMessage.IsNullOrEmpty()) return Result<Unit>.Failure(errorMessage);
 
+                (string errorMessage, List<string> imageNameList) = await uploadFileAccessor.UpLoadImagesAsync(request.News.FileImages);
+                if (!errorMessage.IsNullOrEmpty()) return Result<Unit>.Failure(errorMessage);
+ 
                 mapper.Map<NewsUpdate, Domain.Others.News>(request.News, news);
 
-                foreach (var img in imageNameList) news.NewsPhotos.Add(new NewsPhoto { Url = img });
-                var mainPhoto = news.NewsPhotos.FirstOrDefault(a => a.IsMain);
-                if (mainPhoto == null) news.NewsPhotos.FirstOrDefault().IsMain = true;
-                 
+                if (imageNameList.Count > 0)
+                {
+                    foreach (var img in imageNameList) news.NewsPhotos.Add(new NewsPhoto { Url = img });
+                    var mainPhoto = news.NewsPhotos.FirstOrDefault(a => a.IsMain);
+                    if (mainPhoto == null) news.NewsPhotos.FirstOrDefault().IsMain = true;
+                }
+
+                context.Entry(news).State = EntityState.Modified;
+
                 var success = await context.SaveChangesAsync() > 0;
                 return success ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem to update data.");
             }

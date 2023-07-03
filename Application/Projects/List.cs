@@ -1,4 +1,4 @@
- 
+
 using Application.Core;
 using Application.Projects.DTOS;
 using AutoMapper;
@@ -33,9 +33,15 @@ namespace Application.Projects
                 var query = context.Projects
                     .Include(a => a.Student)
                         .ThenInclude(a => a.Student)
-                    .Where(a => a.IsUsed)
+                    .Include(a => a.Consultants)
+                    .Where(a => request.Params.ShowHidden ? true : a.IsUsed)
                     .OrderByDescending(a => a.CreatedAt)
                     .AsQueryable();
+
+                if (!request.Params.Year.IsNullOrEmpty() && request.Params.Year.Count() == 4) query = query.Where(
+                    a => a.Student.Student.YearEdu == request.Params.Year ||
+                    a.CreatedAt.Year.ToString() == request.Params.Year
+                );
 
                 if (!request.Params.Search.IsNullOrEmpty())
                 {
@@ -44,10 +50,11 @@ namespace Application.Projects
                         a.NameTH.ToLower().Contains(word) ||
                         a.NameEN.ToLower().Contains(word) ||
                         a.Student.UserName.ToLower().Contains(word) ||
-                        a.Student.Student.YearEdu.ToString().ToLower().Contains(word)
+                        a.Student.Student.YearEdu.ToLower().Contains(word) ||
+                        a.Student.FullName.ToLower().Contains(word)
                     );
                 }
-                
+
                 var data = query.ProjectTo<ProjectDTO>(mapper.ConfigurationProvider);
                 return Result<PagedList<ProjectDTO>>.Success(await PagedList<ProjectDTO>.CreateAsync(data, request.Params.currentPage, request.Params.PageSize));
             }

@@ -23,9 +23,7 @@ namespace Application.Projects
             {
                 RuleFor(x => x.Project.NameTH).NotEmpty();
                 RuleFor(x => x.Project.NameEN).NotEmpty();
-                RuleFor(x => x.Project.Description).NotEmpty();
-                RuleFor(x => x.Project.VideoUrl).NotEmpty();
-                RuleFor(x => x.Project.Consultants).Must(list => list.Count == 0).NotEmpty();
+                RuleFor(x => x.Project.Description).NotEmpty();  
             }
         }
 
@@ -55,14 +53,21 @@ namespace Application.Projects
 
                 mapper.Map(request.Project, project);
 
-                (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOne(request.Project.FileImage);
-                if (!string.IsNullOrEmpty(errorMessage)) return Result<Unit>.Failure(errorMessage);
-                if (!string.IsNullOrEmpty(imageName)) project.Image = imageName;
+                if (request.Project.FileImage != null)
+                {
+                    (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOneAsync(request.Project.FileImage);
+                    if (!string.IsNullOrEmpty(errorMessage)) return Result<Unit>.Failure(errorMessage);
+                    if (!string.IsNullOrEmpty(imageName)) project.Image = imageName;
+                }
 
-                var fileUrl = await uploadFileAccessor.UpLoadFileOne(request.Project.FilePDF);
-                if (!string.IsNullOrEmpty(fileUrl)) project.PDF = fileUrl; 
+                if (request.Project.FilePDF != null) {
+                     var fileUrl = await uploadFileAccessor.UpLoadFileOneAsync(request.Project.FilePDF);
+                if (!string.IsNullOrEmpty(fileUrl)) project.PDF = fileUrl;
+                }
 
-                var result = await context.SaveChangesAsync() > 0; 
+                context.Entry(project).State = EntityState.Modified; 
+
+                var result = await context.SaveChangesAsync() > 0;
                 if (!result) return Result<Unit>.Failure("Failed to updated project.");
 
                 return Result<Unit>.Success(Unit.Value);

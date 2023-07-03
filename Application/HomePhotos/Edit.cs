@@ -50,7 +50,7 @@ namespace Application.HomePhotos
 
                 if (request.FileImage != null && request.FileImage.Count > 0)
                 {
-                    (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOne(request.FileImage);
+                    (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOneAsync(request.FileImage);
                     if (!errorMessage.IsNullOrEmpty()) return Result<Unit>.Failure(errorMessage);
                     if (imageName.IsNullOrEmpty()) return Result<Unit>.Failure("Problem to add data.");
                     photo.Url = imageName;

@@ -1,8 +1,9 @@
 import React from "react";
-import { Input, Radio, RadioChangeEvent } from "antd";
+import { Button, Input, Select, Space } from "antd";
 
 import { useStore } from "../../../store/store";
-import { observer } from 'mobx-react-lite';
+import { observer } from "mobx-react-lite";
+import RegisterForm from "../../public/RegisterForm";
 
 const UserFilter = ({ mapTable }: any) => {
   const {
@@ -12,8 +13,9 @@ const UserFilter = ({ mapTable }: any) => {
       setPagingParams,
       setRole,
       pagingParams,
-      predicate
+      predicate,
     },
+    modalStore: { openModal },
   } = useStore();
 
   const handleSearch = (word: string) => {
@@ -22,33 +24,43 @@ const UserFilter = ({ mapTable }: any) => {
     loadAccounts().then(mapTable);
   };
 
-  const handleSelectRole = (e: RadioChangeEvent) => {
-    setRole(e.target.value);
+  const handleSelectRole = (val: string) => {
+    setRole(val);
     loadAccounts().then(mapTable);
   };
 
   return (
-    <>
+    <Space className="py-4 px-2" wrap>
       <Input.Search
         allowClear
-        className="mb-2"
         defaultValue={predicate.get("search")}
         placeholder="ค้นหา"
         onSearch={handleSearch}
         required
       />
 
-      <Radio.Group
-        defaultValue={predicate.get("role")}
-        buttonStyle="solid"
+      <Select
+        defaultValue=""
+        style={{ width: 120 }}
         onChange={handleSelectRole}
-      >
-        <Radio.Button value="all">ทั้งหมด</Radio.Button>
-        <Radio.Button value="guest">ทั่วไป</Radio.Button>
-        <Radio.Button value="student">นักศึกษา</Radio.Button>
-        <Radio.Button value="lecturer">อาจารย์</Radio.Button>
-      </Radio.Group>
-    </>
+        options={[
+          { value: "", label: "ทั้งหมด" },
+          { value: "0", label: "ทั่วไป" },
+          { value: "1", label: "นักศึกษา" },
+          { value: "2", label: "อาจารย์" },
+          { value: "3", label: "แอดมิน" },
+        ]}
+      />
+
+      <Button
+        type="primary"
+        shape="round"
+        children="เพิ่มผู้ใช้"
+        onClick={() =>
+          openModal(<RegisterForm roleLect={true} />, "ลงทะเบียนผู้ใช้")
+        }
+      />
+    </Space>
   );
 };
 

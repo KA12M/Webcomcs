@@ -2,7 +2,7 @@ import React from "react";
 import { Empty, Skeleton, Table } from "antd";
 import { useStore } from "../../../store/store";
 
-import { observer } from "mobx-react-lite"; 
+import { observer } from "mobx-react-lite";
 
 const UserTable = ({ data, columns }: any) => {
   const {
@@ -12,7 +12,7 @@ const UserTable = ({ data, columns }: any) => {
   return (
     <Table
       className="shadow-34 rounded-lg"
-      title={() => "รายชื่อ"}
+      title={() => `รายชื่อ (${pagination?.totalItems})`}
       pagination={{
         className: "mr-4",
         current: pagination?.currentPage,
@@ -29,7 +29,7 @@ const UserTable = ({ data, columns }: any) => {
       locale={{
         emptyText: loading ? <Skeleton active /> : <Empty />,
       }}
-      scroll={{ x: 650, y: 600 }}
+      scroll={{ x: 750 }}
     />
   );
 };

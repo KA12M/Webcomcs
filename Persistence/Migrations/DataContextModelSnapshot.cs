@@ -108,6 +108,51 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.ComputerScienceImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ComputerScienceSubjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("URL")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComputerScienceSubjectId");
+
+                    b.ToTable("ComputerScienceImages");
+                });
+
+            modelBuilder.Entity("Domain.ComputerScienceSubject", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubjectName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ComputerScienceSubjects");
+                });
+
             modelBuilder.Entity("Domain.Consultant", b =>
                 {
                     b.Property<Guid>("Id")
@@ -117,8 +162,8 @@ namespace Persistence.Migrations
                     b.Property<string>("LecturerName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ProjectId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ProjectId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -129,9 +174,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Course", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -160,8 +204,8 @@ namespace Persistence.Migrations
                     b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("GenerationId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("GenerationId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -173,14 +217,41 @@ namespace Persistence.Migrations
                     b.ToTable("CourseAttendees");
                 });
 
+            modelBuilder.Entity("Domain.CourseComment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Body")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("GenerationId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("GenerationId");
+
+                    b.ToTable("CourseComments");
+                });
+
             modelBuilder.Entity("Domain.CoursePhoto", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CourseId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CourseId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsMain")
                         .HasColumnType("bit");
@@ -197,12 +268,14 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Generation", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid?>("CourseId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CourseId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -215,9 +288,6 @@ namespace Persistence.Migrations
 
                     b.Property<bool>("IsCancelled")
                         .HasColumnType("bit");
-
-                    b.Property<int>("Permission")
-                        .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -246,14 +316,20 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("JobName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Position")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -292,8 +368,17 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Expert")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Hidden")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -301,21 +386,18 @@ namespace Persistence.Migrations
                     b.Property<string>("Position")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PrefixId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Prefix")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PrefixId");
 
                     b.ToTable("Lecturers");
                 });
 
             modelBuilder.Entity("Domain.Others.News", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AuthorId")
                         .HasColumnType("nvarchar(450)");
@@ -348,11 +430,14 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsMain")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("NewsId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("NewsId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
@@ -364,18 +449,42 @@ namespace Persistence.Migrations
                     b.ToTable("NewsPhotos");
                 });
 
-            modelBuilder.Entity("Domain.Others.Prefix", b =>
+            modelBuilder.Entity("Domain.Others.Objective", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Sentence")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SyllabusId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Prefixes");
+                    b.HasIndex("SyllabusId");
+
+                    b.ToTable("Objectives");
+                });
+
+            modelBuilder.Entity("Domain.Others.Occupation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Sentence")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SyllabusId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SyllabusId");
+
+                    b.ToTable("Occupations");
                 });
 
             modelBuilder.Entity("Domain.Others.Subject", b =>
@@ -390,8 +499,11 @@ namespace Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SyllabusId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("SubjectCategory")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SyllabusId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -402,9 +514,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Others.Syllabus", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -415,6 +526,9 @@ namespace Persistence.Migrations
                     b.Property<string>("DegreeTH")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Hidden")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
@@ -424,8 +538,11 @@ namespace Persistence.Migrations
                     b.Property<string>("NameTH")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Year")
-                        .HasColumnType("int");
+                    b.Property<string>("PDF")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Year")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -441,10 +558,22 @@ namespace Persistence.Migrations
                     b.Property<string>("KruUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Logo")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PageFacebook")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RegisterUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VideoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("WebName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -454,9 +583,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Project", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -472,6 +600,9 @@ namespace Persistence.Migrations
 
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("KeyWords")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NameEN")
                         .HasColumnType("nvarchar(max)");
@@ -534,8 +665,8 @@ namespace Persistence.Migrations
                     b.Property<string>("OldEdu")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("YearEdu")
-                        .HasColumnType("int");
+                    b.Property<string>("YearEdu")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -545,9 +676,6 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -567,8 +695,6 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -697,28 +823,36 @@ namespace Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1",
+                            Id = "0",
                             Name = "Guest",
                             NormalizedName = "GUEST"
                         },
                         new
                         {
-                            Id = "2",
+                            Id = "1",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         },
                         new
                         {
-                            Id = "3",
+                            Id = "2",
                             Name = "Lecturer",
                             NormalizedName = "LECTURER"
                         },
                         new
                         {
-                            Id = "4",
+                            Id = "3",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
+                });
+
+            modelBuilder.Entity("Domain.ComputerScienceImage", b =>
+                {
+                    b.HasOne("Domain.ComputerScienceSubject", null)
+                        .WithMany("Photos")
+                        .HasForeignKey("ComputerScienceSubjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Domain.Consultant", b =>
@@ -758,6 +892,22 @@ namespace Persistence.Migrations
                     b.Navigation("Generation");
                 });
 
+            modelBuilder.Entity("Domain.CourseComment", b =>
+                {
+                    b.HasOne("Domain.AppUser", "Author")
+                        .WithMany("CourseComments")
+                        .HasForeignKey("AuthorId");
+
+                    b.HasOne("Domain.Generation", "Generation")
+                        .WithMany("Comments")
+                        .HasForeignKey("GenerationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Generation");
+                });
+
             modelBuilder.Entity("Domain.CoursePhoto", b =>
                 {
                     b.HasOne("Domain.Course", null)
@@ -768,28 +918,23 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Generation", b =>
                 {
-                    b.HasOne("Domain.Course", null)
+                    b.HasOne("Domain.Course", "Course")
                         .WithMany("Generations")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("Domain.JobHistory", b =>
                 {
-                    b.HasOne("Domain.AppUser", null)
+                    b.HasOne("Domain.AppUser", "User")
                         .WithOne("JobHistory")
                         .HasForeignKey("Domain.JobHistory", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("Domain.Others.Lecturer", b =>
-                {
-                    b.HasOne("Domain.Others.Prefix", "Prefix")
-                        .WithMany()
-                        .HasForeignKey("PrefixId");
-
-                    b.Navigation("Prefix");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Others.News", b =>
@@ -806,6 +951,22 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Others.News", null)
                         .WithMany("NewsPhotos")
                         .HasForeignKey("NewsId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Domain.Others.Objective", b =>
+                {
+                    b.HasOne("Domain.Others.Syllabus", null)
+                        .WithMany("Objectives")
+                        .HasForeignKey("SyllabusId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Domain.Others.Occupation", b =>
+                {
+                    b.HasOne("Domain.Others.Syllabus", null)
+                        .WithMany("Occupations")
+                        .HasForeignKey("SyllabusId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -843,13 +1004,6 @@ namespace Persistence.Migrations
                         .HasForeignKey("Domain.UserStudent", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.HasOne("Domain.AppUser", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("AppUserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -907,6 +1061,8 @@ namespace Persistence.Migrations
                 {
                     b.Navigation("CourseAttendees");
 
+                    b.Navigation("CourseComments");
+
                     b.Navigation("Courses");
 
                     b.Navigation("JobHistory");
@@ -915,9 +1071,12 @@ namespace Persistence.Migrations
 
                     b.Navigation("Projects");
 
-                    b.Navigation("Roles");
-
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("Domain.ComputerScienceSubject", b =>
+                {
+                    b.Navigation("Photos");
                 });
 
             modelBuilder.Entity("Domain.Course", b =>
@@ -930,6 +1089,8 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Generation", b =>
                 {
                     b.Navigation("Attendees");
+
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("Domain.Others.News", b =>
@@ -939,6 +1100,10 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Others.Syllabus", b =>
                 {
+                    b.Navigation("Objectives");
+
+                    b.Navigation("Occupations");
+
                     b.Navigation("Subjects");
                 });
 

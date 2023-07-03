@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="image/kru.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>วิทยาการคอมพิวเตอร์-มหาวิทยาลัยราชภัฏกาญจนบุรี</title> 
-    <link rel="stylesheet" href="/assets/css/tailwind.output.css" /> 
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Kanit:wght@400&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@400&display=swap");
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/image/kru.png" />
+  <meta property="og:image" content="/image/comsci.png" />
+  <title>วิทยาการคอมพิวเตอร์-มหาวิทยาลัยราชภัฏกาญจนบุรี</title>
+
+  <link rel="stylesheet" href="/css/tailwind.output.css" />
+  <style>
+    @font-face {
+      font-family: "Kanit";
+      src: url("/fonts/Kanit-Light.ttf");
+    }
+
+    * {
+      font-family: "Kanit", sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <button id="to-top-button" onclick="goToTop()" title="Go To Top"
+    class="hidden fixed z-90 bottom-4 right-4 border-0 w-10 h-10 rounded-full drop-shadow-md bg-indigo-500 text-white text-3xl font-bold">
+    &uarr;
+  </button>
+
+  <script type="module" src="/src/main.tsx"></script>
+  <script src="/js/index.js"></script>
+</body>
+
 </html>

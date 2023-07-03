@@ -16,7 +16,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetNewsOne(Guid id)
+        public async Task<ActionResult> GetNewsOne(string id)
         {
             return HandleResult(await Mediator.Send(new Detail.Query { Id = id }));
         }
@@ -37,21 +37,21 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPatch("{id}/setMain/{imageId}")]
-        public async Task<ActionResult> SetMainPhoto(Guid id, Guid imageId)
+        public async Task<ActionResult> SetMainPhoto(string id, Guid imageId)
         {
             return HandleResult(await Mediator.Send(new SetMainPhoto.Command { Id = id, ImageId = imageId }));
         }
 
         [Authorize]
         [HttpPatch("{id}/hidden")]
-        public async Task<ActionResult> SetHidden(Guid id)
+        public async Task<ActionResult> SetHidden(string id)
         {
             return HandleResult(await Mediator.Send(new Hidden.Command { Id = id }));
         }
 
         [Authorize]
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteNews(Guid id)
+        public async Task<ActionResult> DeleteNews(string id)
         {
             return HandleResult(await Mediator.Send(new Remove.Command { Id = id }));
         }

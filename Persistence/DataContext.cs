@@ -18,25 +18,29 @@ namespace Persistence
         public DbSet<SystemSetting> SystemSettings { get; set; }
         public DbSet<Syllabus> Syllabuses { get; set; }
         public DbSet<Subject> Subjects { get; set; }
+        public DbSet<Objective> Objectives { get; set; }
+        public DbSet<Occupation> Occupations { get; set; }
         public DbSet<News> Newses { get; set; }
         public DbSet<NewsPhoto> NewsPhotos { get; set; }
         public DbSet<Lecturer> Lecturers { get; set; }
-        public DbSet<Prefix> Prefixes { get; set; }
         public DbSet<JobHistory> JobHistories { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<CoursePhoto> CoursePhoto { get; set; }
         public DbSet<Generation> Generations { get; set; }
-        public DbSet<CourseAttendee> CourseAttendees { get; set; } 
+        public DbSet<CourseComment> CourseComments { get; set; }
+        public DbSet<CourseAttendee> CourseAttendees { get; set; }
+        public DbSet<ComputerScienceSubject> ComputerScienceSubjects { get; set; }
+        public DbSet<ComputerScienceImage> ComputerScienceImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.Entity<Role>().HasData(
-                new Role { Id = "1", Name = "Guest", NormalizedName = "GUEST" },
-                new Role { Id = "2", Name = "Student", NormalizedName = "STUDENT" },
-                new Role { Id = "3", Name = "Lecturer", NormalizedName = "LECTURER" },
-                new Role { Id = "4", Name = "Admin", NormalizedName = "ADMIN" });
+                new Role { Id = "0", Name = "Guest", NormalizedName = "GUEST" },
+                new Role { Id = "1", Name = "Student", NormalizedName = "STUDENT" },
+                new Role { Id = "2", Name = "Lecturer", NormalizedName = "LECTURER" },
+                new Role { Id = "3", Name = "Admin", NormalizedName = "ADMIN" });
 
             builder.Entity<AppUser>(a =>
             {
@@ -44,22 +48,31 @@ namespace Persistence
                 a.HasOne(a => a.Lecturer).WithOne().HasForeignKey<UserLecturer>(a => a.Id).OnDelete(DeleteBehavior.Cascade);
                 a.HasOne(a => a.JobHistory).WithOne().HasForeignKey<JobHistory>(a => a.Id).OnDelete(DeleteBehavior.Cascade);
             });
+            builder.Entity<JobHistory>().HasOne(a => a.User).WithOne(a => a.JobHistory).OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Project>().HasOne(a => a.Student).WithMany(a => a.Projects).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Project>().HasMany(a => a.Consultants).GetInfrastructure().OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Syllabus>().HasMany(a => a.Subjects).GetInfrastructure().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Syllabus>().HasMany(a => a.Objectives).GetInfrastructure().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Syllabus>().HasMany(a => a.Occupations).GetInfrastructure().OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<News>().HasMany(a => a.NewsPhotos).GetInfrastructure().OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Course>().HasMany(a => a.Photos).GetInfrastructure().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Course>().HasMany(a => a.Generations).GetInfrastructure().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Course>().HasOne(a => a.Lecturer).WithMany(a => a.Courses).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Generation>().HasOne(a => a.Course).WithMany(a => a.Generations).OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<CourseAttendee>(a => a.HasKey(aa => new { aa.AppUserId, aa.GenerationId }));
 
-            builder.Entity<CourseAttendee>().HasOne(a => a.AppUser).WithMany(a => a.CourseAttendees).HasForeignKey(a => a.AppUserId).OnDelete(DeleteBehavior.ClientCascade); 
-            builder.Entity<CourseAttendee>().HasOne(a => a.Generation).WithMany(a => a.Attendees).HasForeignKey(a => a.GenerationId).OnDelete(DeleteBehavior.ClientCascade); 
+            builder.Entity<CourseAttendee>().HasOne(a => a.AppUser).WithMany(a => a.CourseAttendees).HasForeignKey(a => a.AppUserId).OnDelete(DeleteBehavior.ClientCascade);
+            builder.Entity<CourseAttendee>().HasOne(a => a.Generation).WithMany(a => a.Attendees).HasForeignKey(a => a.GenerationId).OnDelete(DeleteBehavior.ClientCascade);
+
+            builder.Entity<CourseComment>().HasOne(a => a.Generation).WithMany(a => a.Comments).OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ComputerScienceSubject>().HasMany(a => a.Photos).GetInfrastructure().OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

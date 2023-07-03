@@ -1,5 +1,6 @@
 
 using System.ComponentModel.DataAnnotations;
+using Domain.DTOS;
 
 namespace API.DTOS
 {
@@ -12,10 +13,10 @@ namespace API.DTOS
         [EmailAddress]
         public string Email { get; set; }
         [Required]
-        [MinLength(8, ErrorMessage = "รหัสผ่านอย่างน้อย 8 ตัวอักษร")] 
+        [MinLength(6, ErrorMessage = "รหัสผ่านอย่างน้อย 6 ตัวอักษร")]
         public string Password { get; set; }
-        
+
         public string Username { get; set; }
-        public string Role { get; set; } = "Guest";
+        public UserRole Role { get; set; } = UserRole.Guest;
     }
 }

@@ -1,12 +1,11 @@
-import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
+import { observer } from "mobx-react-lite";
 import { Outlet, useLoaderData } from "react-router-dom";
 
-import MyHeader from "./Header";
-import { useStore } from "../../store/store";
 import Main from "../Main";
 import SideBar from "./Sidebar/SideBar";
-import ModalContainer from "../../components/ModalContainer";
+import MyHeader from "./Header";
+import { useStore } from "../../store/store";
 
 const Index: React.FC = () => {
   const {
@@ -22,16 +21,14 @@ const Index: React.FC = () => {
 
   return (
     <div
-      className={`flex h-screen bg-gray-50 dark:bg-gray-900 ${
-        isSidebarOpen ? "overflow-hidden" : ""
-      }`}
+      className={`flex bg-gray-50 ${isSidebarOpen ? "overflow-hidden" : ""}`}
     >
       <SideBar />
 
       <div className="flex flex-col flex-1 w-full">
         <MyHeader />
 
-        <Main>
+        <Main className="pb-8">
           <Outlet />
         </Main>
       </div>

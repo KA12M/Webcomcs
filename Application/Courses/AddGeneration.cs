@@ -1,4 +1,5 @@
 
+using System.Text.RegularExpressions;
 using Application.Core;
 using Application.Courses.DTOS;
 using Application.interfaces;
@@ -17,7 +18,6 @@ namespace Application.Courses
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Guid CourseId { get; set; }
             public GenerationCreate Generation { get; set; }
         }
 
@@ -39,14 +39,16 @@ namespace Application.Courses
             private readonly IUserAccessor userAccessor;
             private readonly UserManager<AppUser> userManager;
             private readonly IUploadFileAccessor uploadFileAccessor;
+            private readonly IGenerationAccessor generationAccessor;
 
-            public Handler(DataContext context, IMapper mapper, IUserAccessor userAccessor, UserManager<AppUser> userManager, IUploadFileAccessor uploadFileAccessor)
+            public Handler(DataContext context, IMapper mapper, IUserAccessor userAccessor, UserManager<AppUser> userManager, IUploadFileAccessor uploadFileAccessor, IGenerationAccessor generationAccessor)
             {
                 this.context = context;
                 this.mapper = mapper;
                 this.userAccessor = userAccessor;
                 this.userManager = userManager;
                 this.uploadFileAccessor = uploadFileAccessor;
+                this.generationAccessor = generationAccessor;
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
@@ -58,21 +60,20 @@ namespace Application.Courses
                         .ThenInclude(a => a.Generations)
                     .FirstOrDefaultAsync(a => a.UserName == userAccessor.GetUsername());
                 var course = lecturer.Courses
-                    .FirstOrDefault(a => a.Id == request.CourseId);
+                    .FirstOrDefault(a => a.Id == request.Generation.CourseId);
                 if (course == null) return null;
 
-                var newGeneration = mapper.Map<Generation>(request.Generation);
+                if (request.Generation.GenPhoto.IsNullOrEmpty()) request.Generation.GenPhoto = course.Photos.FirstOrDefault(a => a.IsMain).Url;
 
-                (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOne(request.Generation.FileImages);
-                if (!errorMessage.IsNullOrEmpty()) return Result<Unit>.Failure(errorMessage);
-                if (!imageName.IsNullOrEmpty()) newGeneration.GenPhoto = imageName;
-                else newGeneration.GenPhoto = course.Photos.FirstOrDefault(a => a.IsMain).Url;
+                var newGeneration = mapper.Map<Generation>(request.Generation); 
+
+                newGeneration.Id = generationAccessor.GenerateId("GEN");
 
                 course.Generations.Add(newGeneration);
 
                 var success = await context.SaveChangesAsync() > 0;
                 return success ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem for create new generation of course.");
-            }
+            } 
         }
     }
 }

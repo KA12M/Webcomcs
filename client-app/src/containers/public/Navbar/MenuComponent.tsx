@@ -20,7 +20,7 @@ const MenuComponent = ({
       onClick={() => route && router.navigate(route!)}
       {...rest}
       className={
-        "block py-2 pl-3 text-sm pr-4 text-gray-700 rounded hover:bg-gray-200 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 cursor-pointer"
+        "block py-2 pl-3 text-base pr-4 text-gray-700 rounded hover:bg-gray-200 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 cursor-pointer"
       }
     >
       {label}

@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import Title from "antd/es/typography/Title";
 import { observer } from "mobx-react-lite";
-import { Empty, Row } from "antd";
+import { Empty, Row, Space, Button, Col } from "antd";
 
 import NewsCard from "./NewsCard";
 import { useStore } from "../../../../store/store";
-import LoadingSkeleton from "./LoadingSkeleton";  
+import { router } from "../../../../routes/Routes";
+import { RoutePath } from "../../../../constants/RoutePath";
+import GridSkeleton from "../../../../components/GridSkeleton";
 
 const NewsHomePage = () => {
   const {
@@ -19,7 +21,6 @@ const NewsHomePage = () => {
   } = useStore();
 
   useEffect(() => {
-    setPagingParams(1, 4);
     loadNewses().then(stopLoading);
 
     () => setPagingParams(1, 10);
@@ -27,22 +28,46 @@ const NewsHomePage = () => {
 
   return (
     <div className="py-6  text-gray-400">
-      <Title level={2}>
-        <span>ข่าวประชาสัมพันธ์</span>
-      </Title>
+      <Space wrap align="center">
+        <Title level={2}>
+          <span className="border-l-4 border-gray-500 pl-4 rounded-sm">
+            ข่าวประชาสัมพันธ์
+          </span>
+        </Title> 
+      </Space>
 
-      {!loading || newsRegistry ? (
-        Array.from(newsRegistry.values()).length > 0 ? (
+      {loading ? (
+        <Row className="py-4">
+          <Col span={24}>
+            <GridSkeleton />
+          </Col>
+        </Row>
+      ) : newsRegistry.size > 0 ? (
+        <>
           <Row gutter={[16, 16]}>
-            {Array.from(newsRegistry.values()).map((news) => (
-              <NewsCard key={news.id} news={news} />
-            ))}
+            {Array.from(newsRegistry.values()).map(
+              (news, i) => i < 4 && <NewsCard key={news.id} news={news} />
+            )}
           </Row>
-        ) : (
-          <Empty className="shadow-46 rounded-lg py-8" />
-        )
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            className="py-2"
+          >
+            {newsRegistry.size > 4 && (
+              <Button
+                type="dashed"
+                children="เพิ่มเติม"
+                onClick={() => router.navigate(RoutePath.news)}
+              />
+            )}
+          </div>
+        </>
       ) : (
-        <LoadingSkeleton />
+        <Empty className="shadow-md rounded-md py-8" />
       )}
     </div>
   );

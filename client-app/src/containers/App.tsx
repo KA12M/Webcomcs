@@ -1,19 +1,28 @@
 import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
+import { Outlet } from "react-router-dom";
 
 import { useStore } from "../store/store";
 import Loading from "./Loading";
-import { Outlet } from "react-router-dom";
-import ScrollToTop from '../utils/ScrollToTop';
+import ScrollToTop from "../utils/ScrollToTop";
+import { notification } from "antd";
 
 const App = () => {
-  const { commonStore, userStore, homePhotoStore, settingStore } = useStore();
+  const {
+    commonStore,
+    userStore,
+    homePhotoStore,
+    settingStore,
+    comSciSubject,
+  } = useStore();
 
   useEffect(() => {
     homePhotoStore.GetPhotos(true);
   }, []);
 
   useEffect(() => {
+    commonStore.loadDefaultJson();
+    comSciSubject.loadSubjects();
     if (commonStore.token) {
       settingStore.loadSetting();
       userStore.getUser().finally(commonStore.setAppLoaded);
@@ -22,13 +31,15 @@ const App = () => {
     }
   }, [commonStore, userStore]);
 
-  if (!commonStore.appLoaded) return <Loading message="Loading app..." />;
+  if (!commonStore.appLoaded) return <Loading message="กำลังดาวน์โหลด..." />;
 
   return (
     <>
       <ScrollToTop />
-      
-      <Outlet />
+
+      <>
+        <Outlet />
+      </>
     </>
   );
 };

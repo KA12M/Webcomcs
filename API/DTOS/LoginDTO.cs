@@ -8,7 +8,7 @@ namespace API.DTOS
         [Required]
         public string Email { get; set; }
         [Required] 
-        [MinLength(8, ErrorMessage = "รหัสผ่านอย่างน้อย 8 ตัวอักษร")] 
+        [MinLength(6, ErrorMessage = "รหัสผ่านอย่างน้อย 6 ตัวอักษร")] 
         public string Password { get; set; }
     }
 }

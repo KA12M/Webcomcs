@@ -42,7 +42,7 @@ namespace Application.HomePhotos
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOne(request.FileImages);
+                (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOneAsync(request.FileImages, 100, true);
                 if (!errorMessage.IsNullOrEmpty()) return Result<Unit>.Failure(errorMessage);
                 if (imageName.IsNullOrEmpty()) return Result<Unit>.Failure("Problem to add data.");
                 

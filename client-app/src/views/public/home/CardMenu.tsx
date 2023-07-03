@@ -1,24 +1,24 @@
-import { Card, Col } from "antd";
-import Meta from "antd/es/card/Meta";
 import React from "react";
-import { router } from "../../../routes/Routes";
+import { Col, Space } from "antd";
+import { Link } from "react-router-dom"; 
+import { TbHandClick } from "react-icons/tb";
 
-const CardMenu = ({ title, path, image }: any) => {
+const CardMenu = ({ title, image, url }: any) => {
   return (
-    <Col xs={24} md={12} lg={6}>
-      <Card
-        hoverable
-        onClick={() => router.navigate(path)}
-        cover={
-          <img
-            className="object-cover object-top"
-            style={{ height: "160px" }}
-            src={image}
-          />
-        }
+    <Col xs={24} md={8} lg={6} className="w-full relative overflow-clip">
+      <img
+        src={image}
+        className="rounded-xl shadow-md brightness-75 w-full h-full object-cover"
+      />
+      <Link
+        to={url}
+        className="bg-white absolute rounded-full px-4 pt-2 text-md lg:text-lg bottom-4 text-indigo-600 font-bold translate-x-3 shadow-lg"
       >
-        <Meta title={title} />
-      </Card>
+        <Space>
+          <TbHandClick size={24} />
+          {title}
+        </Space>
+      </Link>
     </Col>
   );
 };

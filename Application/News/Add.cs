@@ -37,20 +37,22 @@ namespace Application.News
             private readonly IMapper mapper;
             private readonly IUploadFileAccessor uploadFileAccessor;
             private readonly IUserAccessor userAccessor;
+            private readonly IGenerationAccessor generationAccessor;
 
-            public Handler(DataContext context, IMapper mapper, IUploadFileAccessor uploadFileAccessor, IUserAccessor userAccessor)
+            public Handler(DataContext context, IMapper mapper, IUploadFileAccessor uploadFileAccessor, IUserAccessor userAccessor, IGenerationAccessor generationAccessor)
             {
                 this.context = context;
                 this.mapper = mapper;
                 this.uploadFileAccessor = uploadFileAccessor;
                 this.userAccessor = userAccessor;
+                this.generationAccessor = generationAccessor;
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var user = await context.Users.FirstOrDefaultAsync(a => a.UserName == userAccessor.GetUsername());
 
-                (string errorMessage, List<string> imageNameList) = await uploadFileAccessor.UpLoadImages(request.News.FileImages);
+                (string errorMessage, List<string> imageNameList) = await uploadFileAccessor.UpLoadImagesAsync(request.News.FileImages);
                 if (!errorMessage.IsNullOrEmpty()) return Result<Unit>.Failure(errorMessage);
 
                 var newNews = mapper.Map<Domain.Others.News>(request.News);
@@ -59,6 +61,8 @@ namespace Application.News
                 newNews.NewsPhotos.FirstOrDefault().IsMain = true;
 
                 newNews.Author = user;
+
+                newNews.Id = generationAccessor.GenerateId("NEWS");
 
                 context.Newses.Add(newNews);
                 var success = await context.SaveChangesAsync() > 0;

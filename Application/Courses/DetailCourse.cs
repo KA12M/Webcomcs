@@ -12,7 +12,7 @@ namespace Application.Courses
     {
         public class Query : IRequest<Result<CourseDetail>>
         {
-            public Guid Id { get; set; }
+            public string Id { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result<CourseDetail>>

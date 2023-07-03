@@ -7,6 +7,8 @@ import LoginForm from "../../../views/public/LoginForm";
 import { Avatar, Dropdown, MenuProps, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { router } from "../../../routes/Routes";
+import { RouteSecret, RoutePath } from "../../../constants/RoutePath";
+import { RoleLabel } from "../../../constants/UserRole";
 
 const NavbarContent = ({ closeDrawer }: any) => {
   const {
@@ -18,13 +20,13 @@ const NavbarContent = ({ closeDrawer }: any) => {
     {
       key: "me",
       label: "บัญชี",
-      onClick: () => router.navigate("/profile"),
+      onClick: () => router.navigate(RoutePath.account),
     },
-    user && user!.roles && user!.roles!.some((a) => a == "Admin")
+    user && user!.roles && user!.roles!.some((a) => a == RoleLabel["3"]["en"])
       ? {
           key: "3",
           label: "แอดมิน",
-          onClick: () => router.navigate("/secret"),
+          onClick: () => router.navigate(RouteSecret.home),
         }
       : null,
     {
@@ -38,10 +40,13 @@ const NavbarContent = ({ closeDrawer }: any) => {
   return (
     <div className="items-center justify-between w-full md:flex md:w-auto md:order-1">
       <ul className="navbar">
-        <MenuComponent label="หน้าหลัก" route="/" />
-        <MenuComponent label="หลักสูตรวิทยาการคอมพิวเตอร์" route="/" />
-        <MenuComponent label="โครงการงานวิจัย" route="/" />
-        <MenuComponent label="หลักสูตรอบรมระยะสั้น" route="/" />
+        <MenuComponent label="หน้าหลัก" route={RoutePath.home} />
+        <MenuComponent
+          label="หลักสูตรวิทย์คอม"
+          route={RoutePath.syllabus}
+        />
+        <MenuComponent label="โครงการงานวิจัย" route={RoutePath.projects} />
+        <MenuComponent label="หลักสูตรอบรม" route={RoutePath.courses} />
         {user ? (
           <MenuComponent
             children={

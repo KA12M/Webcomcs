@@ -5,11 +5,8 @@
   "author": "KARM <pj@example.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "concurrently -k \"yarn dev:api\" \"yarn dev:client\"",
+    "dev": "concurrently -k \"yarn api\" \"yarn client\"",
     "api": "cd API && dotnet watch run",
     "client": "cd client-app && yarn dev"
-  },
-  "dependencies": {
-    "daisyui": "^2.42.1"
   }
 }

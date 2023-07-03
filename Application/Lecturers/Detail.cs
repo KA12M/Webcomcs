@@ -28,8 +28,7 @@ namespace Application.Lecturers
 
             public async Task<Result<LecturerDTO>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var query = await context.Lecturers
-                    .Include(a => a.Prefix)
+                var query = await context.Lecturers 
                     .FirstOrDefaultAsync(a => a.Id == request.Id);
                 if (query == null) return null;
 

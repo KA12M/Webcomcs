@@ -6,10 +6,18 @@ import { observer } from "mobx-react-lite";
 import PageTitle from "../../../components/PageTitle";
 import { useStore } from "../../../store/store";
 import ShowSetting from "./ShowSetting";
+import TagYoutubeForm from "./TagYoutubeForm";
+import MapLocation from "../../../components/MapLocation";
 
 const SettingPage = () => {
   const {
-    settingStore: { loadSetting, updateSetting, setting, changeSetting },
+    settingStore: {
+      loadSetting,
+      updateSetting,
+      setting,
+      changeSetting,
+      loading,
+    },
   } = useStore();
 
   const [file, setFile] = useState<RcFile | undefined>(undefined);
@@ -34,10 +42,20 @@ const SettingPage = () => {
   };
 
   return (
-    <div className="h-screen">
-      <PageTitle homePath="/secret" text="ตั้งค่าระบบ" />
+    <>
+      <PageTitle text="ตั้งค่าระบบ" />
 
-      <div className="shadow-46 rounded-xl">
+      <Button
+        className="mb-4 w-20"
+        shape="round"
+        type="primary"
+        loading={loading}
+        onClick={handleSubmit}
+      >
+        บันทึก
+      </Button>
+
+      <div className="shadow-lg rounded-xl">
         <div className="py-4 px-2 md:py-8 md:px-4 xl:py-12 xl:px-8">
           <ShowSetting
             preview={file}
@@ -45,18 +63,21 @@ const SettingPage = () => {
             setting={setting!}
             changeSetting={changeSetting}
           />
+
+          <TagYoutubeForm tags={setting!.youtubeList || []} />
+
+          <div className="h-10" />
+
+          <MapLocation
+            lat={setting?.latAndLng.lat}
+            lng={setting?.latAndLng.lng}
+            isOnClick
+          />
+
+          <div className="h-6" />
         </div>
       </div>
-
-      <Button
-        className="mt-4"
-        shape="round"
-        type="primary"
-        onClick={handleSubmit}
-      >
-        บันทึก
-      </Button>
-    </div>
+    </>
   );
 };
 
