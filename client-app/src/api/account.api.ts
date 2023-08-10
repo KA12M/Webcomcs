@@ -22,13 +22,14 @@ export const Accounts = {
 const buildFormAccountUpdate = (data: UpdateMe) => {
   var formData = new FormData();
   Object.entries(data).forEach(([key, value]) => {
-    if ((key === "student" || key === "lecturer") && value) {
-      Object.entries(data[key]!).forEach(([key1, value1]) =>
-        formData.append(`Account[${key}][${key1}]`, value1)
-      );
-    } else if (key == "fileImages")
-      formData.append(`Account.FileImages`, value);
-    else formData.append(`Account[${key}]`, value);
+    if (value)
+      if ((key === "student" || key === "lecturer") && value) {
+        Object.entries(data[key]!).forEach(([key1, value1]) =>
+          formData.append(`Account[${key}][${key1}]`, value1)
+        );
+      } else if (key == "fileImages")
+        formData.append(`Account.FileImages`, value);
+      else formData.append(`Account[${key}]`, value);
   });
   return formData;
 };

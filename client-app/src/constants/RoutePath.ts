@@ -1,11 +1,11 @@
 import { config } from "./config";
 
-const HOST = "/" || config.baseURL;
+const HOST = config.baseURL ?? "/";
 
 export const RoutePath = {
   home: HOST,
   account: `${HOST}account`,
-  projects: `${HOST}comsci/projects`,
+  projects: `${HOST}projects`,
   projectForm: `${HOST}project-form`,
   students: `${HOST}student`,
   syllabus: `${HOST}syllabus`,

@@ -3,11 +3,11 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>สาขาวิทยาการคอมพิวเตอร์ มหาวิทยาลัยราชภัฏกาญจนบุรี</title>
   <link rel="icon" type="image/svg+xml" href="./kru.png" />
-  <meta property="og:image" content="/comsci.png" />
+  <meta property="og:image" content="./comsci.png" />
+  <meta property="og:title" content="สาขาวิทยาการคอมพิวเตอร์">
 
   <link rel="stylesheet" href="./assets/css/animate.css" />
   <link rel="stylesheet" href="./assets/css/tailwind.css" />
@@ -15,7 +15,7 @@
 
   <style>
     .space-8 {
-      gap: 8px;
+      gap: 16px;
     }
 
     .bg-orange-400 {
@@ -47,11 +47,11 @@
               สาขาวิทยาการคอมพิวเตอร์ มหาวิทยาลัยราชภัฏกาญจนบุรี
             </h1>
 
-            <p
+            <!-- <p
               class="mx-auto mb-10 max-w-[600px] text-base text-gray-100 sm:text-lg sm:leading-relaxed md:text-xl md:leading-relaxed">
               📗รับผู้จบ ม.6 หรือเทียบเท่าทุกแผนการเรียน 💻มีโน้ตบุคให้ใช้ระหว่างเรียน
               ⌨️ฝึกปฏิบัติซอฟต์แวร์ที่ทันสมัยและใช้งานจริง ✨ตลาดแรงงานต้องการสูง
-            </p>
+            </p> -->
 
             <ul class="mb-10 flex flex-wrap items-center justify-center space-8">
               <li>
@@ -69,13 +69,13 @@
               <li>
                 <a id="#link-comsci" href="#"
                   class="inline-flex items-center justify-center rounded-lg bg-white py-4 px-6 text-center text-2xl font-medium text-dark transition duration-300 ease-in-out hover:text-primary hover:shadow-lg sm:px-10">
-                  เข้าสู่ระบบ
+                  เข้าสู่เว็บไซต์
                 </a>
               </li>
-            </ul>
+            </ul> 
 
             <div class="wow fadeInUp text-center" data-wow-delay=".3s">
-              <img src="./assets/images/hero/brand.svg" alt="image"
+              <img src="./assets/images/brand.svg" alt="image"
                 class="mx-auto w-full max-w-[250px] opacity-50 transition duration-300 ease-in-out hover:opacity-100" />
             </div>
           </div>
@@ -293,19 +293,20 @@
     const linkWorkShop = document.getElementById('#link-workshop');
     const newsContent = document.getElementById("news-content");
 
+    linkWorkShop.href = url + "/projects"
+    linkComsci.href = url
+
     var settings = fetch(url + "/api/SystemSetting")
       .then((response) => response.json())
       .then((data) => {
         linkRegister.href = data.registerUrl ?? "https://register.kru.ac.th/reg/"
-        linkWorkShop.href = url + "/projects"
-        linkComsci.href = url
       });
 
     var newses = fetch(url + "/api/news")
       .then((response) => response.json())
       .then((data) => {
         var content = "";
-        data.forEach(el => {
+        if (data) data.forEach(el => {
           content += `<div class="-mx-4 flex flex-wrap">
         <div class="w-full px-4 md:w-1/2 lg:w-1/4">
           <div class="wow fadeInUp group mb-12 bg-white" data-wow-delay=".1s">

@@ -1,6 +1,5 @@
 import React from "react";
-import { useStore } from "../../../../store/store";
-import { config } from "../../../../constants/config";
+import { useStore } from "../../../../store/store"; 
 import { observer } from "mobx-react-lite";
 
 const WhatStudy = () => {
@@ -14,10 +13,10 @@ const WhatStudy = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 mx-auto items-center max-w-6xl ">
         <div className="px-4 md:mr-6">
           <h3 className="text-4xl pr-6 sm:leading-snug tracking-tight font-bold text-black">
-            {json["what-study"]["title"]}
+            {json["what-study"] && json["what-study"]["title"]}
           </h3>
           <p className="mt-4 text-stone-800 text-xl font-medium">
-            {json["what-study"]["subTitle"]}
+            {json["what-study"] && json["what-study"]["subTitle"]}
           </p>
         </div>
         <div>

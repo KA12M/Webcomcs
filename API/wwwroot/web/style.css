@@ -13,6 +13,16 @@
 
 body {
   margin: 0;
-  padding: 0; 
-  overflow: hidden; 
+  padding: 0;  
 }
+
+.text-gray-100 {
+  color: #f3f4f6;
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+} 
+ 

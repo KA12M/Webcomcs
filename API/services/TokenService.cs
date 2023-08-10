@@ -30,7 +30,7 @@ namespace API.services
                 // Audience = config["JWTSettings:Audience"],
                 // Issuer = config["JWTSettings:Issuer"],
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddHours(1),
+                Expires = DateTime.Now.AddHours(6),
                 SigningCredentials = creds,
             };
 

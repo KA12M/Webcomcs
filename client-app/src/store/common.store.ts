@@ -22,16 +22,20 @@ export default class CommonStore {
   }
 
   loadDefaultJson = () => {
-    fetch(config.baseURL + "/json/default.json")
+    var url = (config.baseURL ?? "/") + "json/default.json";
+    fetch(url)
       .then((res) => res.json())
       .then((data) => (this.json = data))
-      .catch(() => alert("json default not found."));
+      .catch(() => {
+        console.log(url);
+        alert("data default not ready.");
+      });
   };
 
   loadJobNameList = async () => {
     try {
       var response = await agent.ReportAPI.jobNameList();
-      runInAction(() => { 
+      runInAction(() => {
         this.jobNameList = response;
       });
     } catch (error) {

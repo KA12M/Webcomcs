@@ -23,7 +23,7 @@ export const Projects = {
 const FormProject = (data: ProjectCreate | ProjectUpdate) => {
   var formData = new FormData();
   Object.entries(data).forEach(([key, val]) => {
-    if (key == "consultants")
+    if (val) if (key == "consultants")
       val.forEach((el: Consultant, i: number) =>
         formData.append(`${key}[${i}].lecturerName`, el.lecturerName)
       );
