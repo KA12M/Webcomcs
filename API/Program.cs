@@ -1,5 +1,4 @@
-using Persistence;
-using Microsoft.EntityFrameworkCore;
+using Persistence; 
 using API.Middleware;
 using Microsoft.AspNetCore.Identity;
 using Domain;
