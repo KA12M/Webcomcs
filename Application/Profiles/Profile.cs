@@ -32,7 +32,7 @@ namespace Application.Profiles
             public async Task<Result<DTOS.Profile>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var user = await context.Users
-                    .Include(a => a.Student)
+                    .Include(a => a.Student) 
                     .Include(a => a.Lecturer) 
                     .Include(a => a.JobHistory) 
                     .FirstOrDefaultAsync(a => a.UserName == request.Username);

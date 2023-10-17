@@ -28,7 +28,7 @@ const HomePage: React.FC = () => {
             <CardMenu
               key={i}
               title={val.title || ""}
-              image={config.baseURL + "/" + val.image}
+              image={config.baseURL + val.image}
               url={val.url}
             />
           ))}

@@ -26,6 +26,7 @@ const ProjectManage = () => {
       projectRegistry,
       pagination,
       pagingParams,
+      deleteProject,
     },
   } = useStore();
 
@@ -42,7 +43,9 @@ const ProjectManage = () => {
         index: (pagingParams.currentPage - 1) * pagingParams.pageSize + (i + 1),
         nameTH: (
           <Space wrap>
-            <Link to={RoutePath.projectDetail(project.id)}>{project.nameTH}</Link>
+            <Link to={RoutePath.projectDetail(project.id)}>
+              {project.nameTH}
+            </Link>
           </Space>
         ),
         student: (
@@ -83,7 +86,7 @@ const ProjectManage = () => {
           <MyTable
             isLoading={loading}
             data={tableBody}
-            columns={columns({ setProjectSelect })}
+            columns={columns({ setProjectSelect, deleteProject })}
             pagination={{
               current: pagination?.currentPage,
               total: pagination?.totalItems,

@@ -1,9 +1,9 @@
-import { Button, Space, Tooltip } from "antd";
-import { BiSearchAlt2 } from "react-icons/bi";
+import { Button, Popconfirm, Space, Tooltip } from "antd";
+import { BiEdit, BiSearchAlt2, BiTrash } from "react-icons/bi";
 import { router } from "../../../../routes/Routes";
-import { RoutePath } from '../../../../constants/RoutePath';
+import { RoutePath } from "../../../../constants/RoutePath";
 
-export const columns = ({ setProjectSelect }: any) => {
+export const columns = ({ setProjectSelect, deleteProject }: any) => {
   return [
     {
       title: "ลำดับ",
@@ -46,6 +46,32 @@ export const columns = ({ setProjectSelect }: any) => {
               }}
             />
           </Tooltip>
+          <Tooltip placement="top" title={"แก้ไข"}>
+            <Button
+              shape="round"
+              type="primary"
+              color="yellow"
+              onClick={() =>
+                router.navigate(RoutePath.projectFormEdit(project.key))
+              }
+              children={<BiEdit size={18} />}
+            />
+          </Tooltip>
+          <Popconfirm
+            placement="topRight"
+            title="ลบ"
+            description={"ข้อมูลจะถูกลบออกจากระบบ"}
+            onConfirm={() => deleteProject(project.key)}
+          >
+            <Tooltip placement="right" title={"ลบ"}>
+              <Button
+                shape="round"
+                danger
+                children={<BiTrash size={18} />}
+                type="primary"
+              />
+            </Tooltip>
+          </Popconfirm>
         </Space>
       ),
     },

@@ -2,7 +2,9 @@
 using System.Diagnostics.CodeAnalysis;
 using Application.Core;
 using Application.interfaces;
+using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -19,11 +21,13 @@ namespace Application.Projects
         {
             private readonly DataContext context;
             private readonly IUserAccessor userAccessor;
+            private readonly UserManager<AppUser> userManager;
 
-            public Handler(DataContext context, IUserAccessor userAccessor)
+            public Handler(DataContext context, IUserAccessor userAccessor, UserManager<AppUser> userManager)
             {
                 this.context = context;
                 this.userAccessor = userAccessor;
+                this.userManager = userManager;
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
@@ -32,14 +36,21 @@ namespace Application.Projects
                     .Include(a => a.Student)
                     .FirstOrDefaultAsync(a => a.Id == request.Id);
 
-                if (project.Student.UserName != userAccessor.GetUsername()) return Result<Unit>.Failure("You do not have the right.");
+                if (project == null) return null;
 
-                context.Projects.Remove(project);
+                var user = await userManager.FindByNameAsync(userAccessor.GetUsername());
+                var roles = await userManager.GetRolesAsync(user);
 
-                var result = await context.SaveChangesAsync() > 0; 
-                if (!result) return Result<Unit>.Failure("Failed to delete the project.");
+                if (roles.Contains("Admin") || project.Student.UserName == userAccessor.GetUsername())
+                {
+                    context.Projects.Remove(project);
 
-                return Result<Unit>.Success(Unit.Value);
+                    var result = await context.SaveChangesAsync() > 0;
+                    if (!result) return Result<Unit>.Failure("Failed to delete the project.");
+
+                    return Result<Unit>.Success(Unit.Value);
+                }
+                else return Result<Unit>.Failure("You do not have the right.");
             }
         }
     }

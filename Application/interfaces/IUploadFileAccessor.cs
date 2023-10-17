@@ -11,6 +11,6 @@ namespace Application.interfaces
 
         Task<(string errorMessage, string imageName)> UpLoadImageOneAsync(IFormFileCollection formFiles, int quality = 70, bool saveOriginalFile = false);
         Task<(string errorMessage, List<string> imageName)> UpLoadImagesAsync(IFormFileCollection formFiles, int quality = 70, bool saveOriginalFile = false);
-        Task<string> UpLoadFileOneAsync(IFormFileCollection formFiles);
+        Task<string> UpLoadFileOneAsync(IFormFileCollection formFiles, string nameFile = "");
     }
 }

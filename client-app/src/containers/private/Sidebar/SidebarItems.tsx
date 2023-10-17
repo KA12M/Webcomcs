@@ -59,7 +59,7 @@ const items: MenuProps["items"] = [
     children: [
       {
         key: "home-photo",
-        label: "รูปภาพนห้าเว็บ",
+        label: "รูปภาพนหน้าเว็บ",
         icon: <BiImages size={18} />,
         onClick: () => router.navigate(RouteSecret.homePhotoManage),
       },

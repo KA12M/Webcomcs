@@ -106,10 +106,9 @@ const FormSyllabus = ({ mapTable, setFormMode }: any) => {
             <Typography.Title level={5}>
               <p>ชื่อหลักสูตร</p>
             </Typography.Title>
-            <Space wrap>
-              <InputSyllabus name="nameTH" label="ภาษาไทย" required />
-              <InputSyllabus name="nameEN" label="ภาษาอังกฤษ" required />
-            </Space>
+
+            <InputSyllabus name="nameTH" label="ภาษาไทย" required />
+            <InputSyllabus name="nameEN" label="ภาษาอังกฤษ" required />
           </div>
           <Divider />
 
@@ -117,10 +116,8 @@ const FormSyllabus = ({ mapTable, setFormMode }: any) => {
             <Typography.Title level={5}>
               <p>ชื่อปริญญาและสาขาวิชา</p>
             </Typography.Title>
-            <Space wrap>
-              <InputSyllabus name="degreeTH" label="ภาษาไทย" required />
-              <InputSyllabus name="degreeEN" label="ภาษาอังกฤษ" required />
-            </Space>
+            <InputSyllabus name="degreeTH" label="ภาษาไทย" required />
+            <InputSyllabus name="degreeEN" label="ภาษาอังกฤษ" required />
           </div>
           <Divider />
 

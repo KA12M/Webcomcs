@@ -21,7 +21,7 @@ const InputSyllabus = ({
       required={required}
       rules={[...rules!, required && { required, message: "กรุณากรอกข้อมูล" }]}
     >
-      <Input />
+      <Input.TextArea autoSize />
     </Form.Item>
   );
 };

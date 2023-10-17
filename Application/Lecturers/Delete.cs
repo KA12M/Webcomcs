@@ -30,7 +30,7 @@ namespace Application.Lecturers
                 var lecturer = await context.Lecturers.FirstOrDefaultAsync(a => a.Id == request.Id);
                 if (lecturer == null) return null;
 
-                await uploadFileAccessor.Delete(lecturer.Image);
+                // await uploadFileAccessor.Delete(lecturer.Image);
                 context.Lecturers.Remove(lecturer);
 
                 var success = await context.SaveChangesAsync() > 0;

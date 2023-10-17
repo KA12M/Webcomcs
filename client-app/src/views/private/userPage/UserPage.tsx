@@ -22,7 +22,7 @@ import {
 } from "../../../constants/UserRole";
 import { BiDotsHorizontalRounded, BiTrash } from "react-icons/bi";
 import { Link } from "react-router-dom";
-import { RouteSecret, RoutePath } from "../../../constants/RoutePath";
+import { RoutePath } from "../../../constants/RoutePath";
 import FormEditUser from "./components/FormEditUser";
 
 const UserPage = () => {
@@ -34,6 +34,7 @@ const UserPage = () => {
       tableBody,
       accountsRegistry,
       pagingParams,
+      deleteAccount,
     },
   } = useStore();
 
@@ -65,9 +66,9 @@ const UserPage = () => {
         <Space wrap>
           <Popconfirm
             placement="topRight"
-            title={"ลบ"}
-            description={"ข้อมูลจะถูกลบออกจากระบบ"}
-            onConfirm={() => {}}
+            title="ลบ"
+            description="ข้อมูลจะถูกลบออกจากระบบ"
+            onConfirm={() => deleteAccount(record.key).then(mapTable)}
             disabled={record.role == UserRole.admin}
           >
             <Button

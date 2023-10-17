@@ -83,12 +83,24 @@ export default class AccountStore {
     this.loadingSubmit = true;
     try {
       await agent.Accounts.register(data);
-      runInAction(() => { 
-        this.loadingSubmit = false;
+    } catch (error) {
+      throw error;
+    } finally {
+      runInAction(() => (this.loadingSubmit = false));
+    }
+  };
+
+  deleteAccount = async (username: string) => {
+    this.loadingSubmit = true;
+    try {
+      await agent.Profiles.deleteAccount(username);
+      runInAction(() => {
+        this.accountsRegistry.delete(username);
       });
     } catch (error) {
-      runInAction(() => (this.loadingSubmit = false));
       throw error;
+    } finally {
+      runInAction(() => (this.loadingSubmit = false));
     }
   };
 }

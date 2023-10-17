@@ -47,7 +47,7 @@ export default class UserStore {
         this.user = user;
         this.setRoleUser(user.token);
         this.Loading = false;
-        
+
         router.navigate(RoutePath.home);
         store.modalStore.closeModal();
         return user;
@@ -157,5 +157,5 @@ export default class UserStore {
       runInAction(() => (this.loadingSubmit = false));
       throw error;
     }
-  };
+  };  
 }

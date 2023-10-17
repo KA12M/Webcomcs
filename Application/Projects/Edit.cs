@@ -3,8 +3,10 @@ using Application.Core;
 using Application.interfaces;
 using Application.Projects.DTOS;
 using AutoMapper;
+using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -23,7 +25,7 @@ namespace Application.Projects
             {
                 RuleFor(x => x.Project.NameTH).NotEmpty();
                 RuleFor(x => x.Project.NameEN).NotEmpty();
-                RuleFor(x => x.Project.Description).NotEmpty();  
+                RuleFor(x => x.Project.Description).NotEmpty();
             }
         }
 
@@ -33,13 +35,15 @@ namespace Application.Projects
             private readonly IUserAccessor userAccessor;
             private readonly IUploadFileAccessor uploadFileAccessor;
             private readonly IMapper mapper;
+            private readonly UserManager<AppUser> userManager;
 
-            public Handler(DataContext context, IUserAccessor userAccessor, IUploadFileAccessor uploadFileAccessor, IMapper mapper)
+            public Handler(DataContext context, IUserAccessor userAccessor, IUploadFileAccessor uploadFileAccessor, IMapper mapper, UserManager<AppUser> userManager)
             {
                 this.context = context;
                 this.userAccessor = userAccessor;
                 this.uploadFileAccessor = uploadFileAccessor;
                 this.mapper = mapper;
+                this.userManager = userManager;
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
@@ -49,28 +53,36 @@ namespace Application.Projects
                     .Include(a => a.Student)
                     .FirstOrDefaultAsync(a => a.Id == request.Project.Id);
 
-                if (project.Student.UserName != userAccessor.GetUsername()) return Result<Unit>.Failure("You do not have the right to edit.");
+                if (project == null) return null;
 
-                mapper.Map(request.Project, project);
+                var user = await userManager.FindByNameAsync(userAccessor.GetUsername());
+                var roles = await userManager.GetRolesAsync(user);
 
-                if (request.Project.FileImage != null)
+                if (roles.Contains("Admin") || project.Student.UserName == userAccessor.GetUsername())
                 {
-                    (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOneAsync(request.Project.FileImage);
-                    if (!string.IsNullOrEmpty(errorMessage)) return Result<Unit>.Failure(errorMessage);
-                    if (!string.IsNullOrEmpty(imageName)) project.Image = imageName;
+                    mapper.Map(request.Project, project);
+
+                    if (request.Project.FileImage != null)
+                    {
+                        (string errorMessage, string imageName) = await uploadFileAccessor.UpLoadImageOneAsync(request.Project.FileImage);
+                        if (!string.IsNullOrEmpty(errorMessage)) return Result<Unit>.Failure(errorMessage);
+                        if (!string.IsNullOrEmpty(imageName)) project.Image = imageName;
+                    }
+
+                    if (request.Project.FilePDF != null)
+                    {
+                        var fileUrl = await uploadFileAccessor.UpLoadFileOneAsync(request.Project.FilePDF, project.NameEN);
+                        if (!string.IsNullOrEmpty(fileUrl)) project.PDF = fileUrl;
+                    }
+
+                    context.Entry(project).State = EntityState.Modified;
+
+                    var result = await context.SaveChangesAsync() > 0;
+                    if (!result) return Result<Unit>.Failure("Failed to updated project.");
+
+                    return Result<Unit>.Success(Unit.Value);
                 }
-
-                if (request.Project.FilePDF != null) {
-                     var fileUrl = await uploadFileAccessor.UpLoadFileOneAsync(request.Project.FilePDF);
-                if (!string.IsNullOrEmpty(fileUrl)) project.PDF = fileUrl;
-                }
-
-                context.Entry(project).State = EntityState.Modified; 
-
-                var result = await context.SaveChangesAsync() > 0;
-                if (!result) return Result<Unit>.Failure("Failed to updated project.");
-
-                return Result<Unit>.Success(Unit.Value);
+                else return Result<Unit>.Failure("You do not have the right to edit.");
             }
         }
     }

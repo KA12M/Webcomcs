@@ -1,5 +1,4 @@
 
-
 using Application.Core;
 using Application.interfaces;
 using Application.Projects.DTOS;
@@ -25,7 +24,7 @@ namespace Application.Projects
             {
                 RuleFor(x => x.Project.NameTH).NotEmpty();
                 RuleFor(x => x.Project.NameEN).NotEmpty();
-                RuleFor(x => x.Project.Description).NotEmpty();  
+                RuleFor(x => x.Project.Description).NotEmpty();
             }
         }
 
@@ -58,8 +57,8 @@ namespace Application.Projects
                 if (!string.IsNullOrEmpty(errorMessage)) return Result<Unit>.Failure(errorMessage);
                 if (!string.IsNullOrEmpty(imageName)) newProject.Image = imageName;
 
-                var fileUrl = await uploadFileAccessor.UpLoadFileOneAsync(request.Project.FilePDF);
-                if (!string.IsNullOrEmpty(fileUrl)) newProject.PDF = fileUrl; 
+                var fileUrl = await uploadFileAccessor.UpLoadFileOneAsync(request.Project.FilePDF, newProject.NameEN);
+                if (!string.IsNullOrEmpty(fileUrl)) newProject.PDF = fileUrl;
 
                 newProject.Id = generationAccessor.GenerateId("PROJ");
 

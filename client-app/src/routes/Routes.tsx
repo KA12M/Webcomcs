@@ -38,8 +38,8 @@ import NewsPage from "../views/public/news/NewsPage";
 import JobHistoryPage from "../views/public/job-history/JobHistoryPage";
 import ProjectPageForm from "../views/public/project/project-form/ProjectPageForm";
 import { RoutePath, RouteSecret } from "../constants/RoutePath";
-import ComsciSubjectManage from '../views/private/comsci-subject/ComsciSubjectManage';
-import ComsciSubjectPage from '../views/public/comsci-subject/ComsciSubjectPage';
+import ComsciSubjectManage from "../views/private/comsci-subject/ComsciSubjectManage";
+import ComsciSubjectPage from "../views/public/comsci-subject/ComsciSubjectPage";
 import ComsciSubjectDetail from "../views/public/comsci-subject/Detail/ComsciSubjectDetail";
 
 export const Routes = (
@@ -60,8 +60,14 @@ export const Routes = (
       <Route path={`${RoutePath.projects}/:id`} element={<ProjectDetail />} />
       <Route path={RoutePath.courses} element={<CoursePage />} />
       <Route path={RoutePath.news} element={<NewsPage />} />
-      <Route path={RoutePath.comsciSubjectPage} element={<ComsciSubjectPage />} />
-      <Route path={`${RoutePath.comsciSubjectPage}/:id`} element={<ComsciSubjectDetail />} />
+      <Route
+        path={RoutePath.comsciSubjectPage}
+        element={<ComsciSubjectPage />}
+      />
+      <Route
+        path={`${RoutePath.comsciSubjectPage}/:id`}
+        element={<ComsciSubjectDetail />}
+      />
       <Route path={RoutePath.studentJobHistory} element={<JobHistoryPage />} />
       <Route path={`${RoutePath.news}/:id`} element={<NewsDetail />} />
       <Route path={`${RoutePath.courses}/:id`} element={<CourseDetail />} />
@@ -71,7 +77,14 @@ export const Routes = (
       />
 
       <Route
-        element={<PrivateRoute roles={[RoleLabel[UserRole.student]["en"]]} />}
+        element={
+          <PrivateRoute
+            roles={[
+              RoleLabel[UserRole.admin]["en"],
+              RoleLabel[UserRole.student]["en"],
+            ]}
+          />
+        }
       >
         <Route path={RoutePath.projectForm} element={<ProjectPageForm />} />
         <Route
@@ -80,7 +93,14 @@ export const Routes = (
         />
       </Route>
       <Route
-        element={<PrivateRoute roles={[RoleLabel[UserRole.lecturer]["en"]]} />}
+        element={
+          <PrivateRoute
+            roles={[
+              RoleLabel[UserRole.admin]["en"],
+              RoleLabel[UserRole.lecturer]["en"],
+            ]}
+          />
+        }
       >
         <Route path={RoutePath.coursesForm} element={<CourseFormPage />} />
         <Route
@@ -100,7 +120,10 @@ export const Routes = (
         <Route path={RouteSecret.projectManage} element={<ProjectManage />} />
         <Route path={RouteSecret.syllabusManage} element={<SyllabusManage />} />
         <Route path={RouteSecret.lecturerMange} element={<LecturerManage />} />
-        <Route path={RouteSecret.comsciSubjectManage} element={<ComsciSubjectManage />} />
+        <Route
+          path={RouteSecret.comsciSubjectManage}
+          element={<ComsciSubjectManage />}
+        />
         <Route
           path={RouteSecret.jobHistoryManage}
           element={<JobHistoryManage />}

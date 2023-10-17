@@ -25,6 +25,7 @@ import { useForm } from "antd/es/form/Form";
 import JoditEditor from "jodit-react";
 import { router } from "../../../../routes/Routes";
 import { RoutePath } from "../../../../constants/RoutePath";
+import { RoleLabel, UserRole } from "../../../../constants/UserRole";
 
 const FormProject = ({ currentEdit }: { currentEdit: any }) => {
   const {
@@ -62,8 +63,12 @@ const FormProject = ({ currentEdit }: { currentEdit: any }) => {
   const initial = async () => {
     let body = projectRegistry.get(currentEdit);
 
-    if (!body || body.student.username !== user!.username)
-      router.navigate(RoutePath.projects, { replace: true });
+    if (
+      !body ||
+      (!user?.roles?.includes(RoleLabel[UserRole.admin]["en"]) &&
+        body.student.username !== user!.username)
+    )
+      router.navigate(RoutePath.projects);
 
     setFormBody({ ...body });
     form.setFieldsValue(formBody);
@@ -105,7 +110,7 @@ const FormProject = ({ currentEdit }: { currentEdit: any }) => {
 
   const successActions = () => {
     loadProjectByUsername(user?.username!);
-    router.navigate(RoutePath.projects);
+    router.navigate(-1);
     message.success("สำเร็จ");
   };
 
